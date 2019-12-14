@@ -15,14 +15,14 @@
 
 #include "abstract.h"
 #include "../models/spaceship.h"
-#include "../views/player.h"
+#include "../views/spaceship.h"
 
 namespace controller
 {
 class Player : public controller::Abstract
 {
 public:
-    Player(std::shared_ptr<model::Spaceship> model, std::shared_ptr<view::Player> view) : Abstract(std::move(model), std::move(view)) {}
+    Player(std::shared_ptr<model::Spaceship> model, std::shared_ptr<view::Spaceship> view) : Abstract(std::move(model), std::move(view)) {}
 
     void update() override
     {
@@ -30,19 +30,19 @@ public:
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            model.accelerate(sf::Vector2f(-0.1, 0));
+            model.accelerate(Vec2d(-0.001, 0));
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            model.accelerate(sf::Vector2f(0.1, 0));
+            model.accelerate(Vec2d(0.001, 0));
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            model.accelerate(sf::Vector2f(0, -0.1));
+            model.accelerate(Vec2d(0, -0.001));
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            model.accelerate(sf::Vector2f(0, 0.1));
+            model.accelerate(Vec2d(0, 0.001));
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {

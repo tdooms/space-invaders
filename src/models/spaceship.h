@@ -10,49 +10,49 @@
 
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
 #include "abstract.h"
 
-#include "../core/game.h"
 #include "../util/cooldown.h"
+#include "../collision/collidable.h"
 
 namespace model
 {
-    class Spaceship : public model::Abstract
+    class Spaceship : public model::Abstract , public Collidable
     {
     public:
-        explicit Spaceship(sf::Vector2f pos = {}, sf::Vector2f vel = {}) : pos(pos), vel(vel) {}
+        explicit Spaceship(Entity::Type type, Vec2d pos, Vec2d vel, double radius, double lives, double shootAngle, std::chrono::milliseconds cooldownTime, std::string texture);
 
-        void update(core::Game& game) override
-        {
-            if(shouldShoot and shootCooldown.done())
-            {
-                game.addObject<core::projectile>(std::tuple(pos, vel + sf::Vector2f(0, -4)));
-                shootCooldown.start(100ms);
-            }
-            shouldShoot = false;
+        void update(core::Game& game) override;
 
-            pos += vel;
-            send(Type::valueChanged);
-        }
+        [[nodiscard]] CollidableData getCollidableData() const noexcept override;
 
-        [[nodiscard]] sf::Vector2f position() const noexcept
-        {
-            return pos;
-        }
+        void collide(CollisionData data) noexcept override;
 
-        void accelerate(sf::Vector2f acceleration) noexcept
-        {
-            vel += acceleration;
-        }
-        void shoot() noexcept
-        {
-            shouldShoot = true;
-        }
+        void bounce(BounceBox box, Wall wall) noexcept override;
+
+        void accelerate(Vec2d acceleration) noexcept;
+
+        void shoot() noexcept;
+
+        [[nodiscard]] double getRadius() const noexcept;
+
+        [[nodiscard]] Vec2d getPosition() const noexcept;
+
+        [[nodiscard]] Vec2d getVelocity() const noexcept;
+
+        [[nodiscard]] double getLives() const noexcept;
+
+        [[nodiscard]] std::string getTexture() const noexcept;
 
     private:
-        sf::Vector2f pos;
-        sf::Vector2f vel;
+        Entity::Type type;
+        Vec2d pos;
+        Vec2d vel;
+        double radius;
+        double lives;
+        double shootAngle;
+        std::chrono::milliseconds cooldownTime;
+        std::string tex;
 
         bool shouldShoot = false;
         util::Cooldown shootCooldown;

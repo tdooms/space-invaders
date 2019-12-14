@@ -12,52 +12,20 @@
 
 #include "abstract.h"
 #include "../models/spaceship.h"
-#include "../views/player.h"
+#include "../views/spaceship.h"
 
 namespace controller
 {
-    enum class Direction {left, right};
-
     class Enemy : public controller::Abstract
     {
     public:
-        Enemy(std::shared_ptr<model::Spaceship> model, std::shared_ptr<view::Enemy> view, double speed = 2, size_t movetime = 3)
-            : Abstract(std::move(model), std::move(view)), speed(speed), movetime(movetime) {}
+        Enemy(std::shared_ptr<model::Spaceship> model, std::shared_ptr<view::Spaceship> view) : Abstract(std::move(model), std::move(view)) {}
 
         void update() override
         {
             auto& model = dynamic_cast<model::Spaceship&>(*this->model);
-
-            if(cooldown.neverStarted())
-            {
-                model.accelerate(sf::Vector2f(2, 0));
-                direction = Direction ::right;
-                cooldown.start(seconds(movetime));
-            }
-
-            if(cooldown.done())
-            {
-                if(direction == Direction::left)
-                {
-                    model.accelerate(sf::Vector2f(4, 0));
-                    direction = Direction::right;
-                }
-                else if(direction == Direction::right)
-                {
-                    model.accelerate(sf::Vector2f(-4, 0));
-                    direction = Direction::left;
-                }
-                else throw std::runtime_error("unknown direction");
-                cooldown.start(3s);
-            }
+            model.shoot();
         }
-
-    private:
-        util::Cooldown cooldown;
-        Direction direction;
-
-        double speed;
-        std::chrono::seconds movetime;
     };
 
 }

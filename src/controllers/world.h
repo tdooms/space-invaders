@@ -14,7 +14,7 @@
 #include "../models/world.h"
 #include "../views/world.h"
 
-#include <vector>
+#include <unordered_map>
 #include <memory>
 
 
@@ -27,16 +27,27 @@ namespace controller
 
         void update() override
         {
-            for(auto& controller : controllers) controller->update();
+            for(auto& controller : controllers) controller.second->update();
         }
 
-        void add(std::shared_ptr<controller::Abstract> controller)
+        void emplace(size_t id, std::shared_ptr<controller::Abstract> controller)
         {
-            controllers.emplace_back(std::move(controller));
+            controllers.emplace(id, std::move(controller));
+        }
+
+        void erase(size_t id)
+        {
+            controllers.erase(id);
+        }
+
+        void clear()
+        {
+            controllers.clear();
         }
 
     private:
-        std::vector<std::shared_ptr<controller::Abstract>> controllers;
+        // this needs to be a multimap to allow multiple controllers, controlling the same model
+        std::unordered_multimap<size_t, std::shared_ptr<controller::Abstract>> controllers;
 
     };
 

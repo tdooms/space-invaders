@@ -11,7 +11,7 @@
 #pragma once
 
 #include "observer.h"
-#include "types.h"
+#include "events.h"
 
 #include <memory>
 #include <vector>
@@ -26,7 +26,7 @@ public:
         observers.emplace_back(std::move(observer));
     }
 
-    void send(Type type)
+    void send(Event type)
     {
         // sends a message for all observers to receive
         for(auto& observer : observers)

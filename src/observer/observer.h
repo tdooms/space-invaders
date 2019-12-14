@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "types.h"
+#include "events.h"
 
 class Observer
 {
@@ -18,5 +18,5 @@ public:
     Observer() = default;
     virtual ~Observer() = default;
 
-    virtual void receive(Type type) = 0;
+    virtual void receive(Event type) = 0;
 };

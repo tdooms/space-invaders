@@ -1,7 +1,7 @@
 {
     "level":
     {
-        "numEnemies": 10,
+        "numEnemies": 20,
         "numRows": 2
     },
     "stats":

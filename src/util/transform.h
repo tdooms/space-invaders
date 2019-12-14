@@ -11,6 +11,7 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
+#include "vec.h"
 
 namespace util
 {
@@ -24,17 +25,19 @@ namespace util
             return instance;
         }
 
-        [[nodiscard]] sf::Vector2u transform(sf::Vector2f coordinates) const noexcept
+        [[nodiscard]] sf::Vector2f transform(Vec2d coordinates) const noexcept
         {
-            return coordinates *= screenSize;
+            return sf::Vector2f((coordinates.x + 4) * screenSize.x / 8.0, (coordinates.y + 3) * screenSize.y / 6.0);
+        }
+        [[nodiscard]] double scale(double coordinate) const noexcept
+        {
+            return coordinate * screenSize.x / 8.0;
         }
 
         [[nodiscard]] sf::Vector2u getScreenSize() const noexcept
         {
-            return screenSize;
+            return sf::Vector2u(screenSize.x, screenSize.y);
         }
-
-        Transform() noexcept = default;
 
         // delete unnecessary operators/constructors
         Transform(const Transform&) = delete;
@@ -43,7 +46,8 @@ namespace util
         void operator=(Transform&&) = delete;
 
     private:
-        sf::Vector2u screenSize = {800, 600};
+        Transform() = default;
+        Vec2d screenSize = {800, 600};
     };
 }
 

@@ -1,29 +1,24 @@
 //============================================================================
-// @name        : spaceship.h
+// @name        : empty.h
 // @author      : Thomas Dooms
-// @date        : 11/24/19
-// @version     :
+// @date        : 12/13/19
+// @version     : 
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
-// @description :
+// @description : 
 //============================================================================
 
 
 #pragma once
 
-#include <memory>
-
 #include "abstract.h"
-#include "../models/projectile.h"
-#include "../views/projectile.h"
 
 namespace controller
 {
-    class Projectile : public controller::Abstract
+    class Empty : public controller::Abstract
     {
     public:
-        Projectile(std::shared_ptr<model::Projectile> model, std::shared_ptr<view::Projectile> view) : Abstract(std::move(model), std::move(view)) {}
+        Empty() : Abstract(nullptr, nullptr) {}
 
         void update() override {}
     };
-
 }

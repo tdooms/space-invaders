@@ -10,9 +10,9 @@
 
 #pragma once
 
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 #include "../models/abstract.h"
+#include <SFML/Graphics.hpp>
 
 namespace view
 {
@@ -23,6 +23,7 @@ namespace view
         virtual ~Abstract() = default;
 
         virtual void draw(sf::RenderWindow& window) const = 0;
+        void receive([[maybe_unused]] Event type) override {};
 
     protected:
         std::shared_ptr<model::Abstract> model;

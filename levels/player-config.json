@@ -1,0 +1,18 @@
+{
+  "stats":
+  {
+    "speed": 0.03,
+    "size": 0.3,
+    "lives": 3,
+    "texture": "els",
+    "startX": 0,
+    "startY": 2.5
+  },
+  "bullets":
+  {
+    "texture": "tom",
+    "speed": 0.04,
+    "size": 0.1,
+    "cooldown": 200
+  }
+}

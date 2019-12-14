@@ -10,6 +10,9 @@
 
 #pragma once
 
+#include "../models/abstract.h"
+#include "../views/abstract.h"
+
 namespace controller
 {
     class Abstract

@@ -11,100 +11,78 @@
 
 #include <thread>
 #include <iostream>
-
 #include <SFML/Graphics.hpp>
 
-#include "../util/stopwatch.h"
+#include "../managers/level.h"
+#include "../collision/detector.h"
 
-#include "../views/world.h"
-#include "../controllers/world.h"
-#include "../models/world.h"
+using namespace std::chrono;
 
-#include "../views/player.h"
-#include "../views/enemy.h"
-
-#include "../controllers/player.h"
-#include "../controllers/enemy.h"
-
-#include "../models/spaceship.h"
-
-#include "../views/projectile.h"
-#include "../controllers/projectile.h"
-#include "../models/projectile.h"
-#include "../parsers/level.h"
 
 namespace core
 {
 
-struct player
+void Game::tryRemoveEntities()
 {
-    using model = model::Spaceship;
-    using view = view::Player;
-    using controller = controller::Player;
-};
+    std::vector<std::pair<size_t, model::RemoveData>> toRemove;
+    for(const auto& [id, model] : *worldModel)
+    {
+        const auto data = model->getRemoveData();
+        if(data.has_value()) toRemove.emplace_back(id, data.value());
+    }
 
-struct enemy
+    for(const auto [id, data] : toRemove)
+    {
+        if(data.gameOver) stage = Stage::over;
+        score += data.scoreChange;
+
+        worldModel->erase(id);
+        worldView->erase(id);
+        worldController->erase(id);
+
+        enemies.erase(id);
+    }
+}
+
+void Game::tryLoadLevel()
 {
-    using model = model::Spaceship;
-    using view = view::Enemy;
-    using controller = controller::Enemy;
-};
+    if(enemies.empty() and stage == Stage::game)
+    {
+        if(manager::Level::read(*this)) return;
 
-struct projectile
-{
-    using model = model::Projectile;
-    using view = view::Projectile;
-    using controller = controller::Projectile;
-};
-
-
-// scary stuff
-template<typename Object, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
-void Game::addObject(std::tuple<ModelArgs...>&& modelArgs, std::tuple<ViewArgs...>&& viewArgs, std::tuple<ControllerArgs...>&& controllerArgs)
-{
-    // we need lambda functions to wrap the make shared template function, this way it doesn't stay in the way of template argument resolution for std::apply
-    const auto modelmaker = [](auto... args){ return std::make_shared<typename Object::model>(args...); };
-    const auto viewmaker = [](auto... args){ return std::make_shared<typename Object::view>(args...); };
-    const auto controllermaker = [](auto... args){ return std::make_shared<typename Object::controller>(args...); };
-
-    // we call apply to apply the tuple arguments to the lambda's to make our unique pointers
-    auto model = std::apply(modelmaker, modelArgs);
-    auto view = std::apply(viewmaker, std::tuple_cat(std::make_tuple(model), viewArgs));
-    auto controller = std::apply(controllermaker, std::tuple_cat(std::make_tuple(model, view), controllerArgs));
-
-    model->addObserver(view);
-
-    worldModel->add(model);
-    worldView->add(view);
-    worldController->add(controller);
+        std::cout << "next level could not be loaded\n";
+        stage = Stage ::victory;
+    }
 }
 
 void Game::start()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
     // these a re the top level models, views and controllers that represent the world
     worldModel = std::make_shared<model::World>();
     worldView = std::make_shared<view::World>(worldModel);
     worldController = std::make_shared<controller::World>(worldModel, worldView);
 
-    addObject<player>();
-    parsers::Level::read(*this, "levels/level0.json");
 
-    bool shouldRun = true;
+    // we initialize some variables used in the main game loop
     bool shouldRender = false;
+    bool shouldRun = true;
 
     size_t frames = 0;
-
     constexpr std::chrono::duration<double> frameTime(1.0 / 60.0);
 
     duration<double> unprocessedTime(0);
     duration<double> previousTime = std::chrono::system_clock::now().time_since_epoch();
     duration<double> frameCounter(0);
 
+    // read the player config data
+    manager::Player::read(*this);
+
     // main game loop
     while(shouldRun)
     {
+        // update time parameters
         const auto currentTime = std::chrono::system_clock::now().time_since_epoch();
         const auto passedTime = currentTime - previousTime;
         previousTime = currentTime;
@@ -122,17 +100,29 @@ void Game::start()
 
         while(unprocessedTime > frameTime)
         {
-            // game update logic
+            // update and poll SFML events
             sf::Event event {};
             while(window.pollEvent(event))
             {
                 if(event.type == sf::Event::Closed) window.close();
             }
 
+            // game update logic
             worldController->update();
             worldModel->update(*this);
 
-            shouldRun = window.isOpen();
+            collision::detect(worldModel);
+
+            tryRemoveEntities();
+            tryLoadLevel();
+
+            if(stage == Stage::over and not gameOverAdded)
+            {
+                gameOverAdded = true;
+                addObject<Object::Text>(std::tuple("game over", Vec2d(0,0), 100));
+            }
+
+            if(not window.isOpen()) shouldRun = false;
             shouldRender = true;
             unprocessedTime -= frameTime;
         }

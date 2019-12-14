@@ -11,15 +11,30 @@
 #pragma once
 
 #include "../observer/subject.h"
-#include "../core/game.h"
+#include <optional>
+
+namespace core { class Game; }
+namespace Entity { enum Type : size_t; }
 
 namespace model
 {
+    struct RemoveData
+    {
+        RemoveData(bool gameOver, int scoreChange) : gameOver(gameOver), scoreChange(scoreChange) {}
+        bool gameOver;
+        int scoreChange;
+    };
+
     class Abstract : public Subject
     {
     public:
         Abstract() = default;
         virtual ~Abstract() = default;
+
+        std::optional<RemoveData> getRemoveData() noexcept { return removeData; }
         virtual void update(core::Game& game) = 0;
+
+    protected:
+        std::optional<RemoveData> removeData;
     };
 }

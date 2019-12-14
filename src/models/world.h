@@ -11,6 +11,7 @@
 #pragma once
 
 #include "abstract.h"
+#include <unordered_map>
 
 namespace model
 {
@@ -19,16 +20,30 @@ namespace model
     public:
         void update(core::Game& game) override
         {
-            for(size_t i = 0; i < models.size(); i++) models[i]->update(game);
+            for(const auto& model : models) model.second->update(game);
         }
 
-        void add(std::shared_ptr<model::Abstract> model)
+        void emplace(size_t id, std::shared_ptr<model::Abstract> model)
         {
-            models.emplace_back(std::move(model));
+            models.emplace(id, std::move(model));
         }
+
+        void erase(size_t id)
+        {
+            models.erase(id);
+        }
+
+        void clear()
+        {
+            models.clear();
+        }
+
+        auto begin() { return models.begin(); }
+        auto end() { return models.end(); }
+        auto find(size_t id) { return models.find(id); }
 
     private:
-        std::vector<std::shared_ptr<model::Abstract>> models;
+        std::unordered_map<size_t, std::shared_ptr<model::Abstract>> models;
     };
 
 }

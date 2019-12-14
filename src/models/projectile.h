@@ -10,29 +10,61 @@
 
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
 #include "abstract.h"
+#include "../collision/collidable.h"
 
 namespace model
 {
-    class Projectile : public model::Abstract
+class Projectile : public model::Abstract , public Collidable
+{
+
+public:
+    explicit Projectile(Entity::Type type, Vec2d pos, Vec2d vel, double radius) : type(type), pos(pos), vel(vel), radius(radius) {}
+
+    void update([[maybe_unused]] core::Game& game) override
     {
-    public:
-        explicit Projectile(sf::Vector2f pos = {}, sf::Vector2f vel = {}) : pos(pos), vel(vel) {}
+        pos += vel;
+        send(Event::valueChanged);
+    }
 
-        void update([[maybe_unused]] core::Game& game) override
-        {
-            pos += vel;
-            send(Type::valueChanged);
-        }
+    [[nodiscard]] CollidableData getCollidableData() const noexcept override
+    {
+        CollidableData data;
+        data.position = pos;
+        data.velocity = vel;
+        data.dimensions = Vec2d(radius, radius);
+        data.rotation = 0;
+        data.damage = 10;
 
-        [[nodiscard]] sf::Vector2f position() const noexcept
-        {
-            return pos;
-        }
+        return data;
+    }
 
-    private:
-        sf::Vector2f pos;
-        sf::Vector2f vel;
-    };
+    void collide([[maybe_unused]] CollisionData data) noexcept override
+    {
+        removeData = RemoveData(false, 0);
+    }
+
+    void bounce([[maybe_unused]] BounceBox box, [[maybe_unused]] Wall wall) noexcept override
+    {
+        removeData = RemoveData(false, 0);
+    }
+
+    [[nodiscard]] double getRadius() const noexcept
+    {
+        return radius;
+    }
+
+    [[nodiscard]] Vec2d getPosition() const noexcept
+    {
+        return pos;
+    }
+
+
+private:
+    Entity::Type type;
+    Vec2d pos;
+    Vec2d vel;
+    double radius;
+};
+
 }

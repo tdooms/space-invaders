@@ -5259,9 +5259,9 @@ return result;
 }
 
 /*!
-    @brief determine system byte order
+    @brief determine collision byte order
 
-    @return true if and only if system's byte order is little endian
+    @return true if and only if collision's byte order is little endian
 
     @note from http://stackoverflow.com/a/1001328/266378
     */
@@ -6975,14 +6975,14 @@ return current;
 
     @return whether conversion completed
 
-    @note This function needs to respect the system's endianess, because
+    @note This function needs to respect the collision's endianess, because
           bytes in CBOR, MessagePack, and UBJSON are stored in network order
-          (big endian) and therefore need reordering on little endian systems.
+          (big endian) and therefore need reordering on little endian collision.
     */
 template<typename NumberType, bool InputIsLittleEndian = false>
 bool get_number(const input_format_t format, NumberType& result)
 {
-// step 1: read input into array with system's byte order
+// step 1: read input into array with collision's byte order
 std::array<std::uint8_t, sizeof(NumberType)> vec;
 for (std::size_t i = 0; i < sizeof(NumberType); ++i)
 {
@@ -12554,9 +12554,9 @@ return 'D';  // float 64
     @tparam OutputIsLittleEndian Set to true if output data is
                                  required to be little endian
 
-    @note This function needs to respect the system's endianess, because bytes
+    @note This function needs to respect the collision's endianess, because bytes
           in CBOR, MessagePack, and UBJSON are stored in network order (big
-          endian) and therefore need reordering on little endian systems.
+          endian) and therefore need reordering on little endian collision.
     */
 template<typename NumberType, bool OutputIsLittleEndian = false>
 void write_number(const NumberType n)
@@ -19226,7 +19226,7 @@ return 1;
     @brief returns the maximum possible number of elements
 
     Returns the maximum number of elements a JSON value is able to hold due to
-    system or library implementation limitations, i.e. `std::distance(begin(),
+    collision or library implementation limitations, i.e. `std::distance(begin(),
     end())` for the JSON value.
 
     @return The return value depends on the different types and is

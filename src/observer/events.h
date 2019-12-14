@@ -10,7 +10,9 @@
 
 #pragma once
 
-enum class Type
+// we make an exception for textures because they are not cheap to change
+enum class Event
 {
     valueChanged,
+    textureChanged
 };
