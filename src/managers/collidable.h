@@ -11,8 +11,8 @@
 #pragma once
 
 #include "../util/vec.h"
+#include "../models/entity.h"
 
-namespace Entity { enum Type : size_t; }
 
 // all the data the collision system needs
 struct CollidableData
@@ -23,7 +23,9 @@ struct CollidableData
     double rotation;
     double damage;
     double mass;
-    Entity::Type type;
+
+    model::Entity::Type type;
+    model::Entity::Side side;
 };
 
 enum class Wall

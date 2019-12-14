@@ -10,17 +10,31 @@
 
 #pragma once
 
-#include "abstract.h"
 
 #include "../util/cooldown.h"
-#include "../collision/collidable.h"
+#include "../managers/collidable.h"
+
+#include "entity.h"
 
 namespace model
 {
-    class Spaceship : public model::Abstract , public Collidable
+    struct BulletInfo
+    {
+        std::string texture;
+        std::chrono::milliseconds cooldownTime;
+        double speed;
+        double size;
+        double damage;
+
+        double shootAngle;
+        double spreadAngle;
+        size_t numBullets;
+    };
+
+    class Spaceship : public Entity , public Collidable
     {
     public:
-        explicit Spaceship(Entity::Type type, Vec2d pos, Vec2d vel, double radius, double lives, double shootAngle, std::chrono::milliseconds cooldownTime, std::string texture);
+        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, double radius, double lives, std::string texture, BulletInfo info);
 
         void update(core::Game& game) override;
 
@@ -45,16 +59,14 @@ namespace model
         [[nodiscard]] std::string getTexture() const noexcept;
 
     private:
-        Entity::Type type;
         Vec2d pos;
         Vec2d vel;
         double radius;
         double lives;
-        double shootAngle;
-        std::chrono::milliseconds cooldownTime;
         std::string tex;
 
         bool shouldShoot = false;
+        BulletInfo bulletInfo;
         util::Cooldown shootCooldown;
     };
 }

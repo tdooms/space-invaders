@@ -14,7 +14,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../managers/level.h"
-#include "../collision/detector.h"
+#include "../managers/detector.h"
 
 using namespace std::chrono;
 
@@ -119,7 +119,7 @@ void Game::start()
             if(stage == Stage::over and not gameOverAdded)
             {
                 gameOverAdded = true;
-                addObject<Object::Text>(std::tuple("game over", Vec2d(0,0), 100));
+                addObject<objects::Text>(std::tuple("game over", Vec2d(0, 0), 100));
             }
 
             if(not window.isOpen()) shouldRun = false;

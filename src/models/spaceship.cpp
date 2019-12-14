@@ -14,18 +14,32 @@
 
 namespace model
 {
-Spaceship::Spaceship(Entity::Type type, Vec2d pos, Vec2d vel, double radius, double lives, double shootAngle, std::chrono::milliseconds cooldownTime, std::string texture) :
-type(type), pos(pos), vel(vel), radius(radius), lives(lives), shootAngle(shootAngle), cooldownTime(cooldownTime), tex(std::move(texture)) {}
+Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, double radius, double lives, std::string texture, BulletInfo bulletInfo) :
+Entity(type, side), pos(pos), vel(vel), radius(radius), lives(lives), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
 
 void Spaceship::update(core::Game& game)
 {
     if(shouldShoot and shootCooldown.done())
     {
-        game.addEntity<Entity::Projectile>(std::tuple(pos + Vec2d(0, -0.41), vel + Vec2d(0, -0.04), 0.07));
-        shootCooldown.start(cooldownTime);
-    }
-    shouldShoot = false;
+        double angle = bulletInfo.shootAngle;
+        if(bulletInfo.numBullets != 1) angle -= bulletInfo.spreadAngle;
 
+        for(size_t i = 0; i < bulletInfo.numBullets; i++)
+        {
+            const auto startPos = pos + Vec2d::fromPolar(radius + bulletInfo.size, angle);
+            const auto startVel = Vec2d::fromPolar(bulletInfo.speed, angle);
+            auto args = std::tuple(startPos, startVel, bulletInfo.size, bulletInfo.damage, bulletInfo.texture);
+
+            if(side == Side::player) game.addEntity<entities::PlayerProjectile>(std::move(args));
+            else if(side == Side::enemy) game.addEntity<entities::EnemyProjectile>(std::move(args));
+
+            angle += (2.0 * bulletInfo.spreadAngle) / (bulletInfo.numBullets - 1.0);
+        }
+
+        shootCooldown.start(bulletInfo.cooldownTime);
+    }
+    
+    shouldShoot = false;
     pos += vel;
     send(Event::valueChanged);
 }
@@ -40,39 +54,46 @@ CollidableData Spaceship::getCollidableData() const noexcept
     data.damage = 1.0;
     data.mass = 1.0;
     data.type = type;
+    data.side = side;
 
     return data;
 }
 
 void Spaceship::collide(CollisionData data) noexcept
 {
-    if(data.second.type == type)
+    if(side == data.second.side)
     {
-        vel.x = data.second.velocity.x;
+        if(data.second.type == Type::spaceship)
+        {
+            vel.x = data.second.velocity.x;
+        }
     }
-    else
+    else if(side != data.second.side)
     {
         lives -= data.second.damage;
-        if(lives <= 0)
-        {
-            if (type == Entity::Type::player) removeData = RemoveData(true, 0);
-            else removeData = RemoveData(false, 10);
-        }
+    }
+
+    if(lives <= 0)
+    {
+        if (side == Side::player) removeData = RemoveData(true, 0);
+        else removeData = RemoveData(false, 10);
     }
 }
 
 void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
 {
-    if(type == Entity::Type::player)
+    if(side == Side::player)
     {
         switch(wall)
         {
             case Wall::right:
-                pos.x = pos.x - 8 + 2 * radius;
+                pos.x = box.right - radius;
+                vel.x *= -1;
                 break;
 
             case Wall::left:
-                pos.x = pos.x + 8 - 2 * radius;
+                pos.x = box.left + radius;
+                vel.x *= -1;
                 break;
 
             case Wall::top:
@@ -86,7 +107,7 @@ void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
                 break;
         }
     }
-    else
+    else if(side == Side::enemy)
     {
         switch(wall)
         {

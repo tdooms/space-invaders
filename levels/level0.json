@@ -1,7 +1,7 @@
 {
     "level":
     {
-        "numEnemies": 10,
+        "numEnemies": 1,
         "numRows": 2
     },
     "stats":
@@ -15,8 +15,14 @@
     "bullets":
     {
         "texture": "tom",
+        "cooldownTime": 2000,
+
         "speed": 0.04,
         "size": 0.07,
-        "cooldown": 2000
+        "damage": 1,
+
+        "shootAngle": 90,
+        "spreadAngle": 0,
+        "numBullets": 1
     }
 }

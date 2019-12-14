@@ -35,20 +35,23 @@ class Game
 {
 public:
 
-    template<typename Object, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
+    template<typename Entity, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
     size_t addEntity(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {})
     {
         // we need lambda functions to wrap the make shared template function, this way it doesn't stay in the way of template argument resolution for std::apply
-        const auto modelmaker = [](auto... args){ return std::make_shared<typename Object::model>(args...); };
-        const auto viewmaker = [](auto... args){ return std::make_shared<typename Object::view>(args...); };
-        const auto controllermaker = [](auto... args){ return std::make_shared<typename Object::controller>(args...); };
+        const auto modelmaker = [](auto... args){ return std::make_shared<typename Entity::model>(args...); };
+        const auto viewmaker = [](auto... args){ return std::make_shared<typename Entity::view>(args...); };
+        const auto controllermaker = [](auto... args){ return std::make_shared<typename Entity::controller>(args...); };
 
         // we call apply to apply the tuple arguments to the lambda's to make our unique pointers
-        auto model = std::apply(modelmaker, std::tuple_cat(std::make_tuple(Object::type::value), modelArgs));
+        auto model = std::apply(modelmaker, std::tuple_cat(std::make_tuple(Entity::type::value, Entity::side::value), modelArgs));
         auto view = std::apply(viewmaker, std::tuple_cat(std::make_tuple(model), viewArgs));
         auto controller = std::apply(controllermaker, std::tuple_cat(std::make_tuple(model, view), controllerArgs));
 
-        if(Object::type::value == Entity::Type::enemy) enemies.emplace(currId);
+        if(Entity::side::value == model::Entity::Side::enemy and Entity::type::value == model::Entity::Type::spaceship)
+        {
+            enemies.emplace(currId);
+        }
 
         model->addObserver(view);
 

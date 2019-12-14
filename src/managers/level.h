@@ -12,12 +12,30 @@
 
 #include <filesystem>
 #include <fstream>
+#include <cmath>
 
 #include "../parsers/json.h"
 #include "../core/game.h"
 #include "../views/playerInfo.h"
 #include "../core/entities.h"
 #include "../util/random.h"
+
+model::BulletInfo parseBulletInfo(const nlohmann::json& json)
+{
+    model::BulletInfo result;
+    result.texture = json["texture"];
+    result.cooldownTime = std::chrono::milliseconds(json["cooldownTime"]);
+
+    result.speed = json["speed"];
+    result.size = json["size"];
+    result.damage = json["damage"];
+
+    result.shootAngle = json["shootAngle"].get<double>() * (M_PI / 180.0);
+    result.spreadAngle = json["spreadAngle"].get<double>() * (M_PI / 180.0);
+    result.numBullets = json["numBullets"];
+
+    return result;
+}
 
 namespace manager
 {
@@ -37,10 +55,11 @@ namespace manager
                 const auto velocity = Vec2d();
                 const auto size = json["stats"]["size"];
                 const auto lives = json["stats"]["lives"];
-                const auto cooldown = std::chrono::milliseconds(json["bullets"]["cooldown"]);
                 const auto texture = json["stats"]["texture"];
 
-                auto id = game.addEntity<Entity::Player>(std::tuple(start, velocity, size, lives, cooldown, texture));
+                const auto bulletInfo = parseBulletInfo(json["bullets"]);
+
+                auto id = game.addEntity<entities::Player>(std::tuple(start, velocity, size, lives, texture, bulletInfo));
                 game.addViewToEntity<view::PlayerInfo>(id);
             }
             catch(std::exception& e)
@@ -78,15 +97,15 @@ namespace manager
                 const auto velocity = Vec2d(json["stats"]["horizontalSpeed"], json["stats"]["downSpeed"]);
                 const double size = json["stats"]["size"];
                 const double lives = json["stats"]["lives"];
-                const auto cooldown = std::chrono::milliseconds(json["bullets"]["cooldown"]);
                 const std::vector<std::string> textures = json["stats"]["textures"];
+                const auto bulletInfo = parseBulletInfo(json["bullets"]);
 
                 auto curr = start + Vec2d(size, size);
 
                 for(size_t i = 0; i < numEnemies; i++)
                 {
                     const auto& texture = textures[0];
-                    game.addEntity<Entity::Enemy>(std::tuple(curr, velocity, size, lives, cooldown, texture));
+                    game.addEntity<entities::Enemy>(std::tuple(curr, velocity, size, lives, texture, bulletInfo));
 
                     // calculate next position
                     if(i + 1 == enemiesPerRow)

@@ -20,13 +20,6 @@ namespace util
     public:
         Cooldown() = default;
 
-        void start(std::chrono::seconds duration)
-        {
-            started = true;
-            dur = duration;
-            begin = Stopwatch::get().time();
-        }
-
         void start(std::chrono::milliseconds duration)
         {
             started = true;
@@ -34,9 +27,10 @@ namespace util
             begin = Stopwatch::get().time();
         }
 
-        bool neverStarted()
+        void start()
         {
-            return begin == std::chrono::system_clock::time_point();
+            started = true;
+            begin = Stopwatch::get().time();
         }
 
         bool done()
@@ -51,12 +45,6 @@ namespace util
                 const auto diff = Stopwatch::get().time() - begin;
                 return diff > dur;
             }
-        }
-
-        void printUntilDone()
-        {
-            std::cout << "diff: " << std::chrono::duration_cast<std::chrono::milliseconds>(Stopwatch::get().time() - begin).count() << "ms\n";
-            std::cout << "duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(dur).count() << "ms\n\n";
         }
 
     private:

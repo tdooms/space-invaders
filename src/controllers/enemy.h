@@ -23,8 +23,8 @@ namespace controller
 
         void update() override
         {
-            auto& model = dynamic_cast<model::Spaceship&>(*this->model);
-            model.shoot();
+//            auto& model = dynamic_cast<model::Spaceship&>(*this->model);
+//            model.shoot();
         }
     };
 

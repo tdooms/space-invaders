@@ -1,7 +1,7 @@
 //============================================================================
-// @name        : text.h
+// @name        : entity.h
 // @author      : Thomas Dooms
-// @date        : 12/7/19
+// @date        : 12/14/19
 // @version     : 
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
 // @description : 
@@ -14,18 +14,23 @@
 
 namespace model
 {
-    class Score : public model::Abstract
+    class Entity : public model::Abstract
     {
     public:
-        Score() = default;
-
-        void update(core::Game& game) override
+        enum class Type
         {
-            if(game.score() == score) return;
-            score = game.score();
-            send(Type::valueChanged);
-        }
-    private:
-        size_t score;
+            spaceship, projectile
+        };
+
+        enum class Side
+        {
+            player, enemy, neutral
+        };
+
+        Entity(Type type, Side side) : type(type), side(side) {}
+
+    protected:
+        Type type;
+        Side side;
     };
 }

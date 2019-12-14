@@ -18,8 +18,10 @@
 #include "../models/text.h"
 #include "../views/text.h"
 
+#include "../models/entity.h"
 
-namespace Object
+
+namespace objects
 {
     struct Text
     {
@@ -28,19 +30,18 @@ namespace Object
     };
 }
 
-namespace Entity
+namespace entities
 {
-    enum Type : size_t
-    {
-        player, enemy, playerProjectile, enemyProjectile
-    };
+    using namespace model;
 
     struct Player
     {
         using model = model::Spaceship;
         using view = view::Spaceship;
         using controller = controller::Player;
-        using type = std::integral_constant<Type, Type::player>;
+
+        using type = std::integral_constant<Entity::Type, Entity::Type::spaceship>;
+        using side = std::integral_constant<Entity::Side, Entity::Side::player>;
     };
 
     struct Enemy
@@ -48,7 +49,9 @@ namespace Entity
         using model = model::Spaceship;
         using view = view::Spaceship;
         using controller = controller::Enemy;
-        using type = std::integral_constant<Type, Type::enemy>;
+
+        using type = std::integral_constant<Entity::Type, Entity::Type::spaceship>;
+        using side = std::integral_constant<Entity::Side, Entity::Side::enemy>;
     };
 
     struct PlayerProjectile
@@ -56,7 +59,9 @@ namespace Entity
         using model = model::Projectile;
         using view = view::Projectile;
         using controller = controller::Projectile;
-        using type = std::integral_constant<Type, Type::playerProjectile>;
+
+        using type = std::integral_constant<Entity::Type, Entity::Type::projectile>;
+        using side = std::integral_constant<Entity::Side, Entity::Side::player>;
     };
 
     struct EnemyProjectile
@@ -64,7 +69,9 @@ namespace Entity
         using model = model::Projectile;
         using view = view::Projectile;
         using controller = controller::Projectile;
-        using type = std::integral_constant<Type, Type::enemyProjectile>;
+
+        using type = std::integral_constant<Entity::Type, Entity::Type::projectile>;
+        using side = std::integral_constant<Entity::Side, Entity::Side::enemy>;
     };
 
 }

@@ -25,14 +25,6 @@
 
 namespace collision
 {
-    static std::optional<Vec2d> collideCircles(CollidableData lhs, CollidableData rhs)
-    {
-        const auto collide = dist(lhs.position, rhs.position) < (lhs.dimensions + rhs.dimensions).length();
-
-        if(collide) return lerp(lhs.position, rhs.position, 0.5);
-        else return std::nullopt;
-    }
-
     static std::optional<Vec2d> collideRects(CollidableData lhs, CollidableData rhs)
     {
         if(std::abs(lhs.position.x - rhs.position.x) < lhs.dimensions.x + rhs.dimensions.x and

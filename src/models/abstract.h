@@ -14,7 +14,6 @@
 #include <optional>
 
 namespace core { class Game; }
-namespace Entity { enum Type : size_t; }
 
 namespace model
 {

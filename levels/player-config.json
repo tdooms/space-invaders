@@ -11,8 +11,14 @@
   "bullets":
   {
     "texture": "tom",
+    "cooldownTime": 500,
+
     "speed": 0.04,
-    "size": 0.1,
-    "cooldown": 200
+    "size": 0.07,
+    "damage": 1,
+
+    "shootAngle": 270,
+    "spreadAngle": 20,
+    "numBullets": 2
   }
 }
