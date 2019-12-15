@@ -33,8 +33,13 @@ void Game::tryRemoveEntities()
 
     for(const auto [id, data] : toRemove)
     {
-        if(data.gameOver) stage = Stage::over;
+        if(data.isGameOver()) stage = Stage::over;
         score += data.scoreChange;
+
+        if(data.isParticles())
+        {
+            addObject<objects::Particles>(std::tuple(data.pos, data.dim, data.vel, data.numParticles));
+        }
 
         worldModel->erase(id);
         worldView->erase(id);
@@ -64,7 +69,6 @@ void Game::start()
     worldView = std::make_shared<view::World>(worldModel);
     worldController = std::make_shared<controller::World>(worldModel, worldView);
 
-
     // we initialize some variables used in the main game loop
     bool shouldRender = false;
     bool shouldRun = true;
@@ -78,6 +82,7 @@ void Game::start()
 
     // read the player config data
     manager::Player::read(*this);
+    manager::Shield::read(*this);
 
     // main game loop
     while(shouldRun)

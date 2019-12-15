@@ -8,6 +8,7 @@
 //============================================================================
 
 #include "vec.h"
+#include "random.h"
 
 Vec2d::Vec2d() : x(0), y(0) {}
 Vec2d::Vec2d(double first, double second) : x(first), y(second) {}
@@ -15,6 +16,11 @@ Vec2d::Vec2d(double first, double second) : x(first), y(second) {}
 Vec2d Vec2d::fromPolar(double length, double angle) noexcept
 {
     return Vec2d(std::cos(angle), std::sin(angle)) * length;
+}
+
+Vec2d Vec2d::randomUnit() noexcept
+{
+    return fromPolar(1, util::Random::get().between(0.0, M_PI));
 }
 
 Vec2d& Vec2d::normalize() noexcept

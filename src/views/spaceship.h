@@ -20,7 +20,7 @@
 
 namespace view
 {
-    class Spaceship : public view::Abstract
+    class Spaceship final : public view::Abstract
     {
     public:
         explicit Spaceship(std::shared_ptr<model::Spaceship> model) : Abstract(std::move(model))

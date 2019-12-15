@@ -17,6 +17,7 @@
 #include "../controllers/abstract.h"
 #include "../controllers/world.h"
 #include "entities.h"
+#include "objects.h"
 
 using namespace std::chrono_literals;
 
@@ -74,7 +75,7 @@ public:
 
 
     template<typename Object, typename... ModelArgs, typename... ViewArgs>
-    void addObject(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {})
+    size_t addObject(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {})
     {
         const auto modelmaker = [](auto... args){ return std::make_shared<typename Object::model>(args...); };
         const auto viewmaker = [](auto... args){ return std::make_shared<typename Object::view>(args...); };
@@ -86,6 +87,8 @@ public:
 
         worldModel->emplace(currId, std::move(model));
         worldView->emplace(currId, std::move(view));
+
+        return currId++;
     }
 
     void tryRemoveEntities();

@@ -13,22 +13,10 @@
 #include "../controllers/player.h"
 #include "../controllers/enemy.h"
 #include "../controllers/projectile.h"
-#include "../controllers/empty.h"
-
-#include "../models/text.h"
-#include "../views/text.h"
+#include "../controllers/shield.h"
 
 #include "../models/entity.h"
 
-
-namespace objects
-{
-    struct Text
-    {
-        using model = model::Text;
-        using view = view::Text;
-    };
-}
 
 namespace entities
 {
@@ -52,6 +40,16 @@ namespace entities
 
         using type = std::integral_constant<Entity::Type, Entity::Type::spaceship>;
         using side = std::integral_constant<Entity::Side, Entity::Side::enemy>;
+    };
+
+    struct Shield
+    {
+        using model = model::Shield;
+        using view = view::Shield;
+        using controller = controller::Shield;
+
+        using type = std::integral_constant<Entity::Type, Entity::Type::shield>;
+        using side = std::integral_constant<Entity::Side, Entity::Side::neutral>;
     };
 
     struct PlayerProjectile

@@ -1,24 +1,29 @@
 //============================================================================
-// @name        : empty.h
+// @name        : spaceship.h
 // @author      : Thomas Dooms
-// @date        : 12/13/19
-// @version     : 
+// @date        : 11/24/19
+// @version     :
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
-// @description : 
+// @description :
 //============================================================================
 
 
 #pragma once
 
+#include <memory>
+
 #include "abstract.h"
+#include "../models/shield.h"
+#include "../views/shield.h"
 
 namespace controller
 {
-    class Empty : public controller::Abstract
+    class Shield : public controller::Abstract
     {
     public:
-        Empty() : Abstract(nullptr, nullptr) {}
+        Shield(std::shared_ptr<model::Shield> model, std::shared_ptr<view::Shield> view) : Abstract(std::move(model), std::move(view)) {}
 
         void update() override {}
     };
+
 }

@@ -1,7 +1,7 @@
 //============================================================================
-// @name        : projectile.h
+// @name        : shield.h
 // @author      : Thomas Dooms
-// @date        : 12/3/19
+// @date        : 12/14/19
 // @version     : 
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
 // @description : 
@@ -10,19 +10,17 @@
 
 #pragma once
 
-#include <SFML/Graphics/CircleShape.hpp>
-
 #include "abstract.h"
 #include "../managers/manager.h"
-#include "../models/projectile.h"
+#include "../models/shield.h"
 #include "../util/transform.h"
 
 namespace view
 {
-    class Projectile final : public view::Abstract
+    class Shield final : public view::Abstract
     {
     public:
-        explicit Projectile(std::shared_ptr<model::Projectile> model) : Abstract(std::move(model))
+        explicit Shield(std::shared_ptr<model::Shield> model) : Abstract(std::move(model))
         {
             receive(Event::valueChanged);
             receive(Event::textureChanged);
@@ -30,21 +28,21 @@ namespace view
 
         void receive(Event event) override
         {
-            auto& model = dynamic_cast<model::Projectile&>(*this->model);
+            auto& model = dynamic_cast<model::Shield&>(*this->model);
 
             if(event == Event::valueChanged)
             {
-                const auto radius = util::Transform::get().scale(model.getRadius());
+                const auto dimensions = util::Transform::get().scale(model.getDimensions());
+                const auto position = util::Transform::get().transform(model.getPosition());
 
-                shape.setPosition(util::Transform::get().transform(model.getPosition()));
-                shape.setRadius(radius);
-                shape.setOrigin(radius, radius);
+                shape.setPosition(position);
+                shape.setOrigin(dimensions);
+                shape.setSize(dimensions * 2.0f);
             }
             else if(event == Event::textureChanged)
             {
                 shape.setTexture(SfManager::getTexture(model.getTexture()).get());
             }
-
         }
 
         void draw(sf::RenderWindow& window) const override
@@ -53,6 +51,6 @@ namespace view
         }
 
     private:
-        sf::CircleShape shape;
+        sf::RectangleShape shape;
     };
 }

@@ -29,6 +29,10 @@ namespace util
         {
             return sf::Vector2f((coordinates.x + 4) * screenSize.x / 8.0, (coordinates.y + 3) * screenSize.y / 6.0);
         }
+        [[nodiscard]] sf::Vector2f scale(Vec2d coordinates) const noexcept
+        {
+            return sf::Vector2f(coordinates.x * screenSize.x / 8.0, coordinates.y * screenSize.y / 6.0);
+        }
         [[nodiscard]] double scale(double coordinate) const noexcept
         {
             return coordinate * screenSize.x / 8.0;

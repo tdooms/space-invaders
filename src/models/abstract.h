@@ -11,17 +11,35 @@
 #pragma once
 
 #include "../observer/subject.h"
+#include "../util/vec.h"
 #include <optional>
 
 namespace core { class Game; }
 
 namespace model
 {
+    enum Flags
+    {
+        none = 0,
+        gameOver = 1,
+        particles = 2,
+
+    };
     struct RemoveData
     {
-        RemoveData(bool gameOver, int scoreChange) : gameOver(gameOver), scoreChange(scoreChange) {}
-        bool gameOver;
+        RemoveData(int scoreChange, uint8_t flags = Flags::none, Vec2d pos = Vec2d(), Vec2d dim = Vec2d(), Vec2d vel = Vec2d(), size_t numParticles = 0) :
+                scoreChange(scoreChange), flags(flags), pos(pos), dim(dim), vel(vel), numParticles(numParticles) {}
+
+        bool isGameOver() const noexcept { return flags & gameOver; }
+        bool isParticles() const noexcept { return flags & particles; }
+
         int scoreChange;
+        uint8_t flags;
+
+        Vec2d pos;
+        Vec2d dim;
+        Vec2d vel;
+        size_t numParticles;
     };
 
     class Abstract : public Subject

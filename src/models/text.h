@@ -11,11 +11,11 @@
 #pragma once
 
 #include <string>
-#include "abstract.h"
+#include "object.h"
 
 namespace model
 {
-class Text : public model::Abstract
+class Text : public Object
 {
 public:
     explicit Text(std::string string, Vec2d position, size_t fontSize) : string(std::move(string)), position(position), fontSize(fontSize) {}

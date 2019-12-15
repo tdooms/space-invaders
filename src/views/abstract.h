@@ -23,7 +23,7 @@ namespace view
         virtual ~Abstract() = default;
 
         virtual void draw(sf::RenderWindow& window) const = 0;
-        void receive([[maybe_unused]] Event type) override {};
+        void receive([[maybe_unused]] Event event) = 0;
 
     protected:
         std::shared_ptr<model::Abstract> model;

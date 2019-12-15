@@ -19,7 +19,7 @@ namespace model
     public:
         enum class Type
         {
-            spaceship, projectile
+            spaceship, projectile, shield
         };
 
         enum class Side

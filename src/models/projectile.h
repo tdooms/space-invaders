@@ -34,6 +34,8 @@ public:
 
     [[nodiscard]] Vec2d getPosition() const noexcept;
 
+    [[nodiscard]] std::string getTexture() const noexcept;
+
 
 private:
     Vec2d pos;

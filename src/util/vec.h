@@ -19,6 +19,7 @@ struct Vec2d
     Vec2d(double first, double second);
 
     static Vec2d fromPolar(double length, double angle) noexcept;
+    static Vec2d randomUnit() noexcept;
 
     Vec2d& normalize() noexcept;
     [[nodiscard]] Vec2d normalized() const noexcept;

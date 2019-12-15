@@ -75,8 +75,9 @@ void Spaceship::collide(CollisionData data) noexcept
 
     if(lives <= 0)
     {
-        if (side == Side::player) removeData = RemoveData(true, 0);
-        else removeData = RemoveData(false, 10);
+        const auto dim = Vec2d(radius, radius);
+        if (side == Side::player) removeData = RemoveData(0, Flags::gameOver | Flags::particles, pos, dim, vel, 100);
+        else removeData = RemoveData(10, Flags::particles, pos, dim, vel, 20);
     }
 }
 
@@ -127,7 +128,7 @@ void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
                 break;
 
             case Wall::bottom:
-                removeData = RemoveData(true, 0);
+                removeData = RemoveData(0, Flags::gameOver);
                 break;
         }
     }

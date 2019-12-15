@@ -39,6 +39,39 @@ model::BulletInfo parseBulletInfo(const nlohmann::json& json)
 
 namespace manager
 {
+    struct Shield
+    {
+        static bool read(core::Game& game)
+        {
+            if(not std::filesystem::exists(path)) return false;
+
+            std::ifstream file(path);
+            if(not file.is_open()) return false;
+            const auto json = nlohmann::json::parse(file);
+
+            try
+            {
+                for(const auto& elem : json["shields"])
+                {
+                    const auto posititon = Vec2d(elem["posX"], elem["posY"]);
+                    const auto dimensions = Vec2d(elem["dimX"], elem["dimY"]);
+                    const double lives = elem["lives"];
+                    const auto texture = elem["texture"];
+
+                    game.addEntity<entities::Shield>(std::tuple(posititon, dimensions, lives, texture));
+                }
+            }
+            catch(std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+                return false;
+            }
+            return true;
+        }
+
+        static inline std::filesystem::path path = "levels/shield-config.json";
+    };
+
     struct Player
     {
         static bool read(core::Game& game)
