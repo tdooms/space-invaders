@@ -34,17 +34,18 @@ namespace view
 
             if(event == Event::valueChanged)
             {
-                const auto radius = util::Transform::get().scale(model.getRadius());
+                const auto dimensions = util::Transform::get().scale(model.getDimensions());
+                const auto color = model.getColor();
 
                 shape.setPosition(util::Transform::get().transform(model.getPosition()));
-                shape.setRadius(radius);
-                shape.setOrigin(radius, radius);
+                shape.setSize(sf::Vector2f(dimensions.x * 2.0f, dimensions.y * 2.0f));
+                shape.setOrigin(dimensions);
+                shape.setFillColor(util::Color::toSfColor(color));
             }
             else if(event == Event::textureChanged)
             {
                 shape.setTexture(SfManager::getTexture(model.getTexture()).get());
             }
-
         }
 
         void draw(sf::RenderWindow& window) const override
@@ -53,6 +54,6 @@ namespace view
         }
 
     private:
-        sf::CircleShape shape;
+        sf::RectangleShape shape;
     };
 }

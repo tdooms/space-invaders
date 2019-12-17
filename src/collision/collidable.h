@@ -24,8 +24,8 @@ struct CollidableData
     double damage;
     double mass;
 
-    model::Entity::Type type;
-    model::Entity::Side side;
+    model::Type type;
+    model::Side side;
 };
 
 enum class Wall

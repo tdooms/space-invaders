@@ -1,21 +1,28 @@
 {
+  "name": "duo",
+  "description": "shoots 2 bullets",
   "stats":
   {
-    "speed": 0.03,
+    "speed": 0.02,
     "size": 0.3,
     "lives": 3,
-    "texture": "els",
+
+    "color": [153, 255, 51],
+    "texture": "duo",
+
     "startX": 0,
     "startY": 2.5
   },
   "bullets":
   {
-    "texture": "tom",
-    "cooldownTime": 500,
+    "texture": "bullet",
+    "color": [178, 255, 102],
 
+    "cooldownTime": 500,
     "speed": 0.04,
-    "size": 0.07,
+    "size": 0.04,
     "damage": 1,
+    "pierce": 0,
 
     "shootAngle": 270,
     "spreadAngle": 20,

@@ -1,29 +1,29 @@
 {
   "shields":
   [
-    { "posX": -2.0, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX": -1.6, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
+    { "posX": -2.0, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX": -1.6, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
 
-    { "posX": -0.8, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX": -0.4, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  0.0, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  0.4, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  0.8, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
+    { "posX": -0.8, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX": -0.4, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  0.0, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  0.4, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  0.8, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
 
-    { "posX":  1.6, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  2.0, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
+    { "posX":  1.6, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  2.0, "posY": 0.0, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
 
 
-    { "posX": -2.0, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX": -1.6, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
+    { "posX": -2.0, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX": -1.6, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
 
-    { "posX": -0.8, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX": -0.4, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  0.0, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  0.4, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  0.8, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
+    { "posX": -0.8, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX": -0.4, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  0.0, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  0.4, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  0.8, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
 
-    { "posX":  1.6, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" },
-    { "posX":  2.0, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "toon" }
+    { "posX":  1.6, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" },
+    { "posX":  2.0, "posY": 0.4, "dimX": 0.2, "dimY": 0.2, "lives": 5, "texture": "wall" }
   ]
 }

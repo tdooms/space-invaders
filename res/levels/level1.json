@@ -2,27 +2,9 @@
     "level":
     {
         "numEnemies": 20,
-        "numRows": 2
-    },
-    "stats":
-    {
-        "lives": 1,
-        "size": 0.3,
-        "downSpeed": 0.005,
+        "numRows": 2,
+        "downSpeed": 0.002,
         "horizontalSpeed": 0.03,
-        "textures": ["len", "toon"]
-    },
-    "bullets":
-    {
-        "texture": "tom",
-        "cooldownTime": 2000,
-
-        "speed": 0.04,
-        "size": 0.07,
-        "damage": 1,
-
-        "shootAngle": 90,
-        "spreadAngle": 0,
-        "numBullets": 1
+        "type": "circle"
     }
 }

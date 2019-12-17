@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "../managers/collidable.h"
+#include "../collision/collidable.h"
 
 namespace model
 {
@@ -34,12 +34,12 @@ namespace model
             return data;
         }
 
-        void update([[maybe_unused]] core::Game& game) override {}
+        void update([[maybe_unused]] core::World& world) override {}
 
         void collide([[maybe_unused]] CollisionData data) noexcept override
         {
             lives -= data.second.damage;
-            if(lives <= 0) removeData = RemoveData(0, Flags::particles, position, dimensions, Vec2d(0,0), 100);
+            if(lives <= 0) removeData = RemoveData(0, Flags::particles, position, dimensions, Vec2d(0,0), 20);
         }
 
         void bounce([[maybe_unused]] BounceBox box, [[maybe_unused]] Wall wall) noexcept override {}

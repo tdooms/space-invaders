@@ -11,7 +11,7 @@
 #pragma once
 
 #include "abstract.h"
-#include "../managers/collidable.h"
+#include "../collision/collidable.h"
 
 namespace model
 {
@@ -20,9 +20,9 @@ class Projectile : public Entity , public Collidable
 {
 
 public:
-    explicit Projectile(Type type, Side side, Vec2d pos, Vec2d vel, double radius, double damage, std::string texture);
+    explicit Projectile(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double damage, size_t pierce, util::Color color, std::string texture);
 
-    void update([[maybe_unused]] core::Game& game) override;
+    void update([[maybe_unused]] core::World& world) override;
 
     [[nodiscard]] CollidableData getCollidableData() const noexcept override;
 
@@ -30,18 +30,23 @@ public:
 
     void bounce([[maybe_unused]] BounceBox box, [[maybe_unused]] Wall wall) noexcept override;
 
-    [[nodiscard]] double getRadius() const noexcept;
+    [[nodiscard]] Vec2d getDimensions() const noexcept;
 
     [[nodiscard]] Vec2d getPosition() const noexcept;
 
     [[nodiscard]] std::string getTexture() const noexcept;
 
+    [[nodiscard]] util::Color getColor() const noexcept;
 
 private:
     Vec2d pos;
     Vec2d vel;
-    double radius;
+    Vec2d dim;
+
     double damage;
+    size_t pierce;
+
+    util::Color color;
     std::string texture;
 };
 

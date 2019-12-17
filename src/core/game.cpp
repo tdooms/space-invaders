@@ -11,10 +11,15 @@
 
 #include <thread>
 #include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 
-#include "../managers/level.h"
-#include "../managers/detector.h"
+#include "../parsers/json.h"
+#include "../parsers/parser.h"
+
+#include <chrono>
+#include <memory>
+#include <unordered_set>
 
 using namespace std::chrono;
 
@@ -22,52 +27,9 @@ using namespace std::chrono;
 namespace core
 {
 
-void Game::tryRemoveEntities()
-{
-    std::vector<std::pair<size_t, model::RemoveData>> toRemove;
-    for(const auto& [id, model] : *worldModel)
-    {
-        const auto data = model->getRemoveData();
-        if(data.has_value()) toRemove.emplace_back(id, data.value());
-    }
-
-    for(const auto [id, data] : toRemove)
-    {
-        if(data.isGameOver()) stage = Stage::over;
-        score += data.scoreChange;
-
-        if(data.isParticles())
-        {
-            addObject<objects::Particles>(std::tuple(data.pos, data.dim, data.vel, data.numParticles));
-        }
-
-        worldModel->erase(id);
-        worldView->erase(id);
-        worldController->erase(id);
-
-        enemies.erase(id);
-    }
-}
-
-void Game::tryLoadLevel()
-{
-    if(enemies.empty() and stage == Stage::game)
-    {
-        if(manager::Level::read(*this)) return;
-
-        std::cout << "next level could not be loaded\n";
-        stage = Stage ::victory;
-    }
-}
-
-void Game::start()
+void Game::startGame()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
-
-    // these a re the top level models, views and controllers that represent the world
-    worldModel = std::make_shared<model::World>();
-    worldView = std::make_shared<view::World>(worldModel);
-    worldController = std::make_shared<controller::World>(worldModel, worldView);
 
     // we initialize some variables used in the main game loop
     bool shouldRender = false;
@@ -81,8 +43,10 @@ void Game::start()
     duration<double> frameCounter(0);
 
     // read the player config data
-    manager::Player::read(*this);
-    manager::Shield::read(*this);
+    parser::loadAndAddPlayer("res/players/duo.json", world);
+    parser::loadAndAddShield("res/shields/shield-config.json", world);
+
+//    parser::loadAndAddSelection("res/players", start);
 
     // main game loop
     while(shouldRun)
@@ -113,18 +77,17 @@ void Game::start()
             }
 
             // game update logic
-            worldController->update();
-            worldModel->update(*this);
+            const auto stage = world.update();
 
-            collision::detect(worldModel);
+            if(stage == Stage::victory)
+            {
+                parser::loadAndAddLevel("res/levels/level0.json", world);
+            }
 
-            tryRemoveEntities();
-            tryLoadLevel();
-
-            if(stage == Stage::over and not gameOverAdded)
+            if(stage == Stage::defeat and not gameOverAdded)
             {
                 gameOverAdded = true;
-                addObject<objects::Text>(std::tuple("game over", Vec2d(0, 0), 100));
+                world.addObject<objects::Text>(std::tuple("game over", Vec2d(0, 0), 100));
             }
 
             if(not window.isOpen()) shouldRun = false;
@@ -135,7 +98,7 @@ void Game::start()
         {
             // game render logic
             window.clear();
-            worldView->draw(window);
+            world.draw(window);
             window.display();
 
             frames++;

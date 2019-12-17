@@ -8,16 +8,18 @@
 //============================================================================
 
 #include "spaceship.h"
+
+#include <utility>
 #include "../core/game.h"
 #include "../core/entities.h"
 
 
 namespace model
 {
-Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, double radius, double lives, std::string texture, BulletInfo bulletInfo) :
-Entity(type, side), pos(pos), vel(vel), radius(radius), lives(lives), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
+Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color color, std::string texture, BulletInfo bulletInfo) :
+Entity(type, side), pos(pos), vel(vel), dim(dim), lives(lives), maxLives(lives), color(std::move(color)), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
 
-void Spaceship::update(core::Game& game)
+void Spaceship::update(core::World& world)
 {
     if(shouldShoot and shootCooldown.done())
     {
@@ -26,12 +28,12 @@ void Spaceship::update(core::Game& game)
 
         for(size_t i = 0; i < bulletInfo.numBullets; i++)
         {
-            const auto startPos = pos + Vec2d::fromPolar(radius + bulletInfo.size, angle);
+            const auto startPos = pos + Vec2d::fromPolar(dim.y + bulletInfo.dim.y, angle);
             const auto startVel = Vec2d::fromPolar(bulletInfo.speed, angle);
-            auto args = std::tuple(startPos, startVel, bulletInfo.size, bulletInfo.damage, bulletInfo.texture);
+            auto args = std::tuple(startPos, startVel, bulletInfo.dim, bulletInfo.damage, bulletInfo.pierce, bulletInfo.color, bulletInfo.texture);
 
-            if(side == Side::player) game.addEntity<entities::PlayerProjectile>(std::move(args));
-            else if(side == Side::enemy) game.addEntity<entities::EnemyProjectile>(std::move(args));
+            if(side == Side::player) world.addEntity<entities::PlayerProjectile>(std::move(args));
+            else if(side == Side::enemy) world.addEntity<entities::EnemyProjectile>(std::move(args));
 
             angle += (2.0 * bulletInfo.spreadAngle) / (bulletInfo.numBullets - 1.0);
         }
@@ -49,7 +51,7 @@ CollidableData Spaceship::getCollidableData() const noexcept
     CollidableData data;
     data.position = pos;
     data.velocity = vel;
-    data.dimensions = Vec2d(radius, radius);
+    data.dimensions = dim;
     data.rotation = 0.0;
     data.damage = 1.0;
     data.mass = 1.0;
@@ -75,9 +77,8 @@ void Spaceship::collide(CollisionData data) noexcept
 
     if(lives <= 0)
     {
-        const auto dim = Vec2d(radius, radius);
-        if (side == Side::player) removeData = RemoveData(0, Flags::gameOver | Flags::particles, pos, dim, vel, 100);
-        else removeData = RemoveData(10, Flags::particles, pos, dim, vel, 20);
+        if (side == Side::player) removeData = RemoveData(0, Flags::gameOver | Flags::particles, pos, dim, vel, 50);
+        else removeData = RemoveData(10, Flags::particles, pos, dim, vel, 10);
     }
 }
 
@@ -88,22 +89,22 @@ void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
         switch(wall)
         {
             case Wall::right:
-                pos.x = box.right - radius;
+                pos.x = box.right - dim.x;
                 vel.x *= -1;
                 break;
 
             case Wall::left:
-                pos.x = box.left + radius;
+                pos.x = box.left + dim.x;
                 vel.x *= -1;
                 break;
 
             case Wall::top:
-                pos.y = box.top + radius;
+                pos.y = box.top + dim.y;
                 vel.y *= -1;
                 break;
 
             case Wall::bottom:
-                pos.y = box.bottom - radius;
+                pos.y = box.bottom - dim.y;
                 vel.y *= -1;
                 break;
         }
@@ -113,17 +114,17 @@ void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
         switch(wall)
         {
             case Wall::right:
-                pos.x = box.right - radius;
+                pos.x = box.right - dim.x;
                 vel.x *= -1;
                 break;
 
             case Wall::left:
-                pos.x = box.left + radius;
+                pos.x = box.left + dim.x;
                 vel.x *= -1;
                 break;
 
             case Wall::top:
-                pos.y = box.top + radius;
+                pos.y = box.top + dim.y;
                 vel.y *= -1;
                 break;
 
@@ -144,9 +145,9 @@ void Spaceship::shoot() noexcept
     shouldShoot = true;
 }
 
-[[nodiscard]] double Spaceship::getRadius() const noexcept
+[[nodiscard]] Vec2d Spaceship::getDimensions() const noexcept
 {
-    return radius;
+    return dim;
 }
 
 [[nodiscard]] Vec2d Spaceship::getPosition() const noexcept
@@ -164,8 +165,28 @@ void Spaceship::shoot() noexcept
     return lives;
 }
 
+[[nodiscard]] double Spaceship::getMaxLives() const noexcept
+{
+    return maxLives;
+}
+
+[[nodiscard]] const util::Cooldown& Spaceship::getCooldown() const noexcept
+{
+    return shootCooldown;
+}
+
+[[nodiscard]] std::chrono::milliseconds Spaceship::getCooldownDuration() const noexcept
+{
+    return bulletInfo.cooldownTime;
+}
+
 [[nodiscard]] std::string Spaceship::getTexture() const noexcept
 {
     return tex;
+}
+
+[[nodiscard]] util::Color Spaceship::getColor() const noexcept
+{
+    return color;
 }
 }

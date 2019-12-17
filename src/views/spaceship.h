@@ -16,6 +16,7 @@
 #include "../managers/manager.h"
 #include "../models/spaceship.h"
 #include "../util/transform.h"
+#include "../util/color.h"
 
 
 namespace view
@@ -39,12 +40,14 @@ namespace view
             }
             else
             {
-                const auto radius = util::Transform::get().scale(model.getRadius());
+                const auto dim = util::Transform::get().scale(model.getDimensions());
                 const auto pos = util::Transform::get().transform(model.getPosition());
+                const auto color = model.getColor();
 
                 shape.setPosition(pos);
-                shape.setRadius(radius);
-                shape.setOrigin(radius, radius);
+                shape.setSize(sf::Vector2f(dim.x * 2.f, dim.y * 2.f));
+                shape.setOrigin(dim);
+                shape.setFillColor(util::Color::toSfColor(color));
             }
         }
 
@@ -54,7 +57,7 @@ namespace view
         }
 
     private:
-        sf::CircleShape shape;
+        sf::RectangleShape shape;
     };
 
 }

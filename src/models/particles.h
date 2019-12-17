@@ -33,7 +33,7 @@ namespace model
             {
                 const auto randomX = util::Random::get().between(position.x - dimensions.x, position.x + dimensions.x);
                 const auto randomY = util::Random::get().between(position.y - dimensions.y, position.y + dimensions.y);
-                const auto randomVel = util::Random::get().between(0.0, 0.5);
+                const auto randomVel = util::Random::get().between(0.0, 0.02);
                 const auto randomRadius = util::Random::get().between(0.0, 0.05);
 
                 particle.position = Vec2d(randomX, randomY);
@@ -42,7 +42,7 @@ namespace model
             }
         }
 
-        void update([[maybe_unused]] core::Game& game) override
+        void update([[maybe_unused]] core::World& world) override
         {
             for(auto& particle : particles)
             {

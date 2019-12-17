@@ -28,8 +28,8 @@ namespace entities
         using view = view::Spaceship;
         using controller = controller::Player;
 
-        using type = std::integral_constant<Entity::Type, Entity::Type::spaceship>;
-        using side = std::integral_constant<Entity::Side, Entity::Side::player>;
+        using type = std::integral_constant<Type, Type::spaceship>;
+        using side = std::integral_constant<Side, Side::player>;
     };
 
     struct Enemy
@@ -38,8 +38,8 @@ namespace entities
         using view = view::Spaceship;
         using controller = controller::Enemy;
 
-        using type = std::integral_constant<Entity::Type, Entity::Type::spaceship>;
-        using side = std::integral_constant<Entity::Side, Entity::Side::enemy>;
+        using type = std::integral_constant<Type, Type::spaceship>;
+        using side = std::integral_constant<Side, Side::enemy>;
     };
 
     struct Shield
@@ -48,8 +48,8 @@ namespace entities
         using view = view::Shield;
         using controller = controller::Shield;
 
-        using type = std::integral_constant<Entity::Type, Entity::Type::shield>;
-        using side = std::integral_constant<Entity::Side, Entity::Side::neutral>;
+        using type = std::integral_constant<Type, Type::shield>;
+        using side = std::integral_constant<Side, Side::neutral>;
     };
 
     struct PlayerProjectile
@@ -58,8 +58,8 @@ namespace entities
         using view = view::Projectile;
         using controller = controller::Projectile;
 
-        using type = std::integral_constant<Entity::Type, Entity::Type::projectile>;
-        using side = std::integral_constant<Entity::Side, Entity::Side::player>;
+        using type = std::integral_constant<Type, Type::projectile>;
+        using side = std::integral_constant<Side, Side::player>;
     };
 
     struct EnemyProjectile
@@ -68,8 +68,8 @@ namespace entities
         using view = view::Projectile;
         using controller = controller::Projectile;
 
-        using type = std::integral_constant<Entity::Type, Entity::Type::projectile>;
-        using side = std::integral_constant<Entity::Side, Entity::Side::enemy>;
+        using type = std::integral_constant<Type, Type::projectile>;
+        using side = std::integral_constant<Side, Side::enemy>;
     };
 
 }

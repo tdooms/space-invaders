@@ -20,7 +20,7 @@ class Text : public Object
 public:
     explicit Text(std::string string, Vec2d position, size_t fontSize) : string(std::move(string)), position(position), fontSize(fontSize) {}
 
-    void update([[maybe_unused]] core::Game& game) override {}
+    void update([[maybe_unused]] core::World& world) override {}
 
     [[nodiscard]] const std::string& getString() noexcept { return string; }
 

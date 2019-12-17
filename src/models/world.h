@@ -18,9 +18,9 @@ namespace model
     class World : public model::Abstract
     {
     public:
-        void update(core::Game& game) override
+        void update(core::World& world) override
         {
-            for(const auto& model : models) model.second->update(game);
+            for(const auto& model : models) model.second->update(world);
         }
 
         void emplace(size_t id, std::shared_ptr<model::Abstract> model)

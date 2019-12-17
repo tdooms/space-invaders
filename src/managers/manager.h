@@ -23,8 +23,8 @@ public:
 
     static std::shared_ptr<sf::Texture> getTexture(const std::string& name)
     {
-        static const std::filesystem::path base = "textures";
-        static const std::string extension = "jpg";
+        static const std::filesystem::path base = "res/textures";
+        static const std::string extension = "png";
 
         const auto iter = textures.find(name);
         if(iter == textures.end())
@@ -43,7 +43,7 @@ public:
 
     static std::shared_ptr<sf::Font> getFont(const std::string& name)
     {
-        static const std::filesystem::path base = "fonts";
+        static const std::filesystem::path base = "res/fonts";
         static const std::string extension = "otf";
 
         const auto iter = fonts.find(name);

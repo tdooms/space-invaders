@@ -11,6 +11,6 @@
 
 int main()
 {
-    core::Game().start();
+    core::Game().startGame();
     return 0;
 }

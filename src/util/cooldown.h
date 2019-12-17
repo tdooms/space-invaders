@@ -18,8 +18,6 @@ namespace util
     struct Cooldown
     {
     public:
-        Cooldown() = default;
-
         void start(std::chrono::milliseconds duration)
         {
             started = true;
@@ -33,7 +31,7 @@ namespace util
             begin = Stopwatch::get().time();
         }
 
-        bool done()
+        bool done() const
         {
             if(not started)
             {
@@ -47,9 +45,23 @@ namespace util
             }
         }
 
+        std::chrono::milliseconds msRemaining() const
+        {
+            if(done()) return std::chrono::milliseconds(0);
+
+            const auto remaining = std::chrono::system_clock::now() - begin;
+            return std::chrono::duration_cast<std::chrono::milliseconds>(remaining);
+        }
+
+        std::chrono::milliseconds currentDuration() const
+        {
+            if(not started) return std::chrono::milliseconds(0);
+            else return dur;
+        }
+
     private:
         std::chrono::system_clock::time_point begin;
-        std::chrono::duration<size_t, std::milli> dur;
-        bool started = false;
+        std::chrono::milliseconds dur;
+        mutable bool started = false;
     };
 }

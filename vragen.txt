@@ -1,1 +1,2 @@
 niet altijd .cpp files?
+exceptions, liever wel of zorgen van niet

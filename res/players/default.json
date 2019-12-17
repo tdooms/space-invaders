@@ -1,14 +1,14 @@
 {
-  "name": "tank",
-  "description": "has lots of life",
+  "name": "default",
+  "description": "nothing special",
   "stats":
   {
-    "speed": 0.01,
+    "speed": 0.02,
     "size": 0.3,
-    "lives": 5,
+    "lives": 3,
 
-    "texture": "spaceship",
     "color": [151, 102, 102],
+    "texture": "spaceship",
 
     "startX": 0,
     "startY": 2.5
@@ -18,14 +18,14 @@
     "texture": "bullet",
     "color": [151, 102, 102],
 
-    "cooldownTime": 500,
+    "cooldownTime": 300,
     "speed": 0.04,
-    "size": 0.06,
-    "damage": 1.5,
+    "size": 0.05,
+    "damage": 1.2,
     "pierce": 1,
 
     "shootAngle": 270,
-    "spreadAngle": 0,
+    "spreadAngle": 20,
     "numBullets": 1
   }
 }
