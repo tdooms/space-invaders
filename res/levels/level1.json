@@ -1,10 +1,9 @@
 {
     "level":
     {
-        "numEnemies": 20,
-        "numRows": 2,
+        "numEnemies": 18,
         "downSpeed": 0.002,
         "horizontalSpeed": 0.03,
-        "type": "circle"
+        "type": "alien"
     }
 }

@@ -38,7 +38,7 @@ void Projectile::update([[maybe_unused]] core::World& world)
     return data;
 }
 
-void Projectile::collide([[maybe_unused]] CollisionData data) noexcept
+void Projectile::collide(CollisionData data) noexcept
 {
     if(side != data.second.side)
     {

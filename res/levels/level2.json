@@ -2,7 +2,6 @@
     "level":
     {
         "numEnemies": 15,
-        "numRows": 2,
         "downSpeed": 0.002,
         "horizontalSpeed": 0.03,
         "type": "pacman"

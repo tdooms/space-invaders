@@ -18,18 +18,26 @@ namespace util
 {
     struct Color
     {
-        std::tuple<uint8_t, uint8_t, uint8_t> data;
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+
+        static Color lerp(Color lhs, Color rhs, double a)
+        {
+            uint8_t r = lhs.r * a + rhs.r * (1.0 - a);
+            uint8_t g = lhs.g * a + rhs.g * (1.0 - a);
+            uint8_t b = lhs.b * a + rhs.b * (1.0 - a);
+            return {r, g, b};
+        }
 
         static sf::Color toSfColor(Color color) noexcept
         {
-            return sf::Color(std::get<0>(color.data), std::get<1>(color.data), std::get<2>(color.data));
+            return sf::Color(color.r, color.g, color.b);
         }
 
         static Color fromJson(const nlohmann::json& json)
         {
-            Color color;
-            color.data = std::make_tuple(json[0], json[1], json[2]);
-            return color;
+            return {json[0], json[1], json[2]};
         }
     };
 

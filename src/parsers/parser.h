@@ -42,7 +42,7 @@ namespace parser
     {
         model::BulletInfo result;
         result.texture = json["texture"];
-        result.color = {std::make_tuple(json["color"][0], json["color"][1], json["color"][2])};
+        result.color = util::Color::fromJson(json["color"]);
         result.cooldownTime = std::chrono::milliseconds(json["cooldownTime"]);
 
         const double size = json["size"];
@@ -69,11 +69,11 @@ namespace parser
             const auto velocity = Vec2d();
             const auto dim = Vec2d(json["stats"]["size"], json["stats"]["size"]);
             const double lives = json["stats"]["lives"];
-            const util::Color color = {std::make_tuple(json["stats"]["color"][0], json["stats"]["color"][1], json["stats"]["color"][2])};
-            const std::string texture = json["stats"]["texture"];
+            const auto color = util::Color::fromJson(json["stats"]["color"]);
+            const auto texture = json["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(json["bullets"]);
 
-            const auto id = world.addEntity<entities::Player>(std::tuple(start, velocity, dim, lives, color, texture, bulletInfo));
+            const auto id = world.addEntity<entities::Player>(std::tuple(start, velocity, dim, lives, color, color, texture, bulletInfo));
             world.addViewToEntity<view::PlayerInfo>(id);
         }
         catch(std::exception& e)
@@ -115,11 +115,11 @@ namespace parser
             const auto velocity = Vec2d();
             const auto dim = Vec2d(json["stats"]["size"], json["stats"]["size"]);
             const double lives = json["stats"]["lives"];
-            const util::Color color = {std::make_tuple(json["stats"]["color"][0], json["stats"]["color"][1], json["stats"]["color"][2])};
+            const util::Color color = util::Color::fromJson(json["stats"]["color"]);
             const std::string texture = json["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(json["bullets"]);
 
-            world.addEntity<entities::Enemy>(std::tuple(start, velocity, dim, lives, color, texture, bulletInfo));
+            world.addEntity<entities::Enemy>(std::tuple(start, velocity, dim, lives, color, color, texture, bulletInfo));
         }
         catch(std::exception& e)
         {
@@ -139,6 +139,8 @@ namespace parser
         }
         for(const auto& elem : std::filesystem::directory_iterator(path.string()))
         {
+            if(elem.path().filename().string()[0] == '.') continue;
+
             std::fstream file(elem.path());
             auto json = nlohmann::json::parse(file);
             choices.emplace_back(std::move(json));
@@ -180,27 +182,26 @@ namespace parser
             static const auto start = Vec2d(-3.9, -2.9);
 
             const size_t numEnemies = json["level"]["numEnemies"];
-            const size_t numRows = json["level"]["numRows"];
-            const size_t enemiesPerRow = numEnemies / numRows;
-
             const auto enemyJson = openJson("res/enemies/" + json["level"]["type"].get<std::string>() + ".json");
 
             const auto velocity = Vec2d(enemyJson["stats"]["horizontalSpeed"], enemyJson["stats"]["downSpeed"]);
             const auto dim = Vec2d(enemyJson["stats"]["size"], enemyJson["stats"]["size"]);
             const double lives = enemyJson["stats"]["lives"];
-            const util::Color color = util::Color::fromJson(enemyJson["stats"]["color"]);
 
-            const std::string texture = enemyJson["stats"]["texture"];
+            const auto startColor = util::Color::fromJson(enemyJson["stats"]["startColor"]);
+            const auto deathColor = util::Color::fromJson(enemyJson["stats"]["deathColor"]);
+
+            const auto texture = enemyJson["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(enemyJson["bullets"]);
 
             auto curr = start + dim;
 
             for(size_t i = 0; i < numEnemies; i++)
             {
-                world.addEntity<entities::Enemy>(std::tuple(curr, velocity, dim, lives, color, texture, bulletInfo));
+                world.addEntity<entities::Enemy>(std::tuple(curr, velocity, dim, lives, startColor, deathColor, texture, bulletInfo));
 
                 // calculate next position
-                if(i + 1 == enemiesPerRow)
+                if(curr.x > 2)
                 {
                     curr.x = start.x + util::Random::get().between(0.1, 0.2);
                     curr.y += 2 * dim.y + 0.05;

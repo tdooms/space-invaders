@@ -16,8 +16,8 @@
 
 namespace model
 {
-Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color color, std::string texture, BulletInfo bulletInfo) :
-Entity(type, side), pos(pos), vel(vel), dim(dim), lives(lives), maxLives(lives), color(std::move(color)), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
+Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletInfo bulletInfo) :
+Entity(type, side), pos(pos), vel(vel), dim(dim), lives(lives), maxLives(lives), startColor(startColor), deathColor(deathColor), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
 
 void Spaceship::update(core::World& world)
 {
@@ -196,6 +196,6 @@ void Spaceship::shoot() noexcept
 
 [[nodiscard]] util::Color Spaceship::getColor() const noexcept
 {
-    return color;
+    return util::Color::lerp(startColor, deathColor, lives / maxLives);
 }
 }

@@ -74,8 +74,8 @@ namespace core
 
             if(Entity::type::value == model::Type::spaceship)
             {
-                if(Entity::side::value == model::Side::enemy) enemies.emplace(currId);
-                else if(Entity::side::value == model::Side::player) players.emplace(currId);
+                if(Entity::side::value == model::Side::enemy) enemies.emplace(id);
+                else if(Entity::side::value == model::Side::player) players.emplace(id);
             }
             return id;
         }

@@ -20,7 +20,7 @@ namespace model
     class Spaceship : public Entity , public Collidable
     {
     public:
-        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color color, std::string texture, BulletInfo info);
+        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletInfo info);
 
         void update(core::World& world) override;
 
@@ -60,7 +60,8 @@ namespace model
         double lives;
         double maxLives;
 
-        util::Color color;
+        util::Color startColor;
+        util::Color deathColor;
         std::string tex;
 
         bool shouldShoot = false;

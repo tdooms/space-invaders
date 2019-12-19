@@ -1,16 +1,16 @@
 {
   "info":
   {
-    "name": "big",
-    "description": "shoots big bullets"
+    "name": "cheat",
+    "description": "used for cheating"
   },
   "stats":
   {
     "speed": 0.015,
     "size": 0.3,
-    "lives": 3,
+    "lives": 100,
 
-    "color": [102, 178, 255],
+    "color": [255, 255, 255],
     "texture": "spaceship",
 
     "startX": 0,
@@ -19,16 +19,16 @@
   "bullets":
   {
     "texture": "bullet",
-    "color": [51, 153, 255],
+    "color": [204, 204, 204],
 
-    "cooldownTime": 1000,
+    "cooldownTime": 100,
     "speed": 0.03,
     "size": 0.08,
     "damage": 3,
     "pierce": 2,
 
     "shootAngle": 270,
-    "spreadAngle": 0,
-    "numBullets": 1
+    "spreadAngle": 20,
+    "numBullets": 5
   }
 }
