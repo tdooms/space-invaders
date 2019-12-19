@@ -9,6 +9,7 @@ file(GLOB_RECURSE SRCS ${space-invaders_SOURCE_DIR}/src/*.cpp)
 add_executable(space-invaders ${HDRS} ${SRCS})
 
 target_link_libraries(space-invaders "-lsfml-graphics -lsfml-window -lsfml-system")
+target_link_libraries(space-invaders stdc++fs)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wnon-virtual-dtor -Wold-style-cast -Wunused -Woverloaded-virtual -Wpedantic -Wnull-dereference -Wdouble-promotion -Wformat=2")
 

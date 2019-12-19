@@ -41,7 +41,7 @@ namespace controller
                 cooldown.start(200ms);
                 model.choose(curr - 1);
             }
-            if(curr != num - 1 and sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            if(curr != num - 1 and sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
             {
                 cooldown.start(200ms);
                 model.choose(curr + 1);
