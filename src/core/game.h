@@ -20,6 +20,12 @@ using namespace std::chrono_literals;
 
 namespace core
 {
+    enum WorldType : size_t
+    {
+        start,
+        main,
+        end
+    };
 
 class Game
 {
@@ -32,11 +38,15 @@ public:
     void startGame();
 
 private:
-    World world;
-//    World start;
+    // these functions are to separate the main loop from the game logic itself
+    void setup();
+    void update(Stage stage);
 
-    bool gameOver = false;
-    bool gameOverAdded = false;
+    std::array<World, 3> worlds;
+    WorldType current = start;
+
+    size_t id = 0;
+    size_t level = 0;
 };
 
 

@@ -1,6 +1,9 @@
 {
-  "name": "big",
-  "description": "shoots big bullets",
+  "info":
+  {
+    "name": "big",
+    "description": "shoots big bullets"
+  },
   "stats":
   {
     "speed": 0.015,
@@ -20,7 +23,7 @@
 
     "cooldownTime": 500,
     "speed": 0.03,
-    "size": 0.8,
+    "size": 0.08,
     "damage": 3,
     "pierce": 2,
 

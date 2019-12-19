@@ -22,7 +22,7 @@ namespace core
         start,
         normal,
         defeat,
-        victory
+        done
     };
 
     class World
@@ -43,10 +43,9 @@ namespace core
             worldModel->update(*this);
 
             collision::detect(worldModel);
-
             tryRemoveEntities();
 
-            if(enemies.empty()) stage = Stage::victory;
+            if(enemies.empty()) stage = Stage::done;
             else stage = Stage::normal;
 
             return stage;
@@ -57,6 +56,11 @@ namespace core
             return score;
         }
 
+        auto findModel(size_t id)
+        {
+            return worldModel->find(id);
+        }
+
         void draw(sf::RenderWindow& window)
         {
             worldView->draw(window);
@@ -65,29 +69,15 @@ namespace core
         template<typename Entity, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
         size_t addEntity(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {})
         {
-            // we need lambda functions to wrap the make shared template function, this way it doesn't stay in the way of template argument resolution for std::apply
-            const auto modelmaker = [](auto... args){ return std::make_shared<typename Entity::model>(args...); };
-            const auto viewmaker = [](auto... args){ return std::make_shared<typename Entity::view>(args...); };
-            const auto controllermaker = [](auto... args){ return std::make_shared<typename Entity::controller>(args...); };
-
-            // we call apply to apply the tuple arguments to the lambda's to make our unique pointers
-            auto model = std::apply(modelmaker, std::tuple_cat(std::make_tuple(Entity::type::value, Entity::side::value), modelArgs));
-            auto view = std::apply(viewmaker, std::tuple_cat(std::make_tuple(model), viewArgs));
-            auto controller = std::apply(controllermaker, std::tuple_cat(std::make_tuple(model, view), controllerArgs));
+            const auto tuple = std::make_tuple(Entity::type::value, Entity::side::value);
+            const auto id = addObject<Entity>(std::tuple_cat(tuple, modelArgs), std::forward<std::tuple<ViewArgs...>>(viewArgs), std::forward<std::tuple<ControllerArgs...>>(controllerArgs));
 
             if(Entity::type::value == model::Type::spaceship)
             {
                 if(Entity::side::value == model::Side::enemy) enemies.emplace(currId);
                 else if(Entity::side::value == model::Side::player) players.emplace(currId);
             }
-
-            model->addObserver(view);
-
-            worldModel->emplace(currId, std::move(model));
-            worldView->emplace(currId, std::move(view));
-            worldController->emplace(currId, std::move(controller));
-
-            return currId++;
+            return id;
         }
 
         template<typename View, typename... ViewArgs>
@@ -101,19 +91,24 @@ namespace core
         }
 
 
-        template<typename Object, typename... ModelArgs, typename... ViewArgs>
-        size_t addObject(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {})
+        template<typename Object, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
+        size_t addObject(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {})
         {
+            // we need lambda functions to wrap the make shared template function, this way it doesn't stay in the way of template argument resolution for std::apply
             const auto modelmaker = [](auto... args){ return std::make_shared<typename Object::model>(args...); };
             const auto viewmaker = [](auto... args){ return std::make_shared<typename Object::view>(args...); };
+            const auto controllermaker = [](auto... args){ return std::make_shared<typename Object::controller>(args...); };
 
+            // we call apply to apply the tuple arguments to the lambda's to make our unique pointers
             auto model = std::apply(modelmaker, modelArgs);
             auto view = std::apply(viewmaker, std::tuple_cat(std::make_tuple(model), viewArgs));
+            auto controller = std::apply(controllermaker, std::tuple_cat(std::make_tuple(model, view), controllerArgs));
 
             model->addObserver(view);
 
             worldModel->emplace(currId, std::move(model));
             worldView->emplace(currId, std::move(view));
+            worldController->emplace(currId, std::move(controller));
 
             return currId++;
         }
@@ -154,7 +149,7 @@ namespace core
         std::unordered_set<size_t> enemies;
         std::unordered_set<size_t> players;
 
-        size_t currId = 1;
+        size_t currId = 0;
         size_t score = 0;
 
         Stage stage = Stage::start;

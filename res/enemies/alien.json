@@ -7,7 +7,7 @@
     "horizontalSpeed": 0.03,
 
     "color": [255, 178, 102],
-    "textures": ["alien", "alien"]
+    "texture": "alien"
   },
   "bullets":
   {

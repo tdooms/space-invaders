@@ -63,16 +63,25 @@ CollidableData Spaceship::getCollidableData() const noexcept
 
 void Spaceship::collide(CollisionData data) noexcept
 {
-    if(side == data.second.side)
+    auto& other = data.second;
+    if(side == other.side)
     {
-        if(data.second.type == Type::spaceship)
+        if(other.type == Type::spaceship)
         {
-            vel.x = data.second.velocity.x;
+            vel.x = other.velocity.x;
+            if(pos.x > other.position.x)
+            {
+                pos.x = other.position.x + other.dimensions.x + dim.x;
+            }
+            else
+            {
+                pos.x = other.position.x - (other.dimensions.x + dim.x);
+            }
         }
     }
-    else if(side != data.second.side)
+    else if(side != other.side)
     {
-        lives -= data.second.damage;
+        lives -= other.damage;
     }
 
     if(lives <= 0)

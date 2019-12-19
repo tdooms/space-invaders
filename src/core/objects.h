@@ -10,11 +10,9 @@
 
 #pragma once
 
-#include "../models/text.h"
-#include "../views/text.h"
-
-#include "../models/particles.h"
-#include "../views/particles.h"
+#include "../controllers/text.h"
+#include "../controllers/particles.h"
+#include "../controllers/selection.h"
 
 namespace objects
 {
@@ -22,11 +20,20 @@ namespace objects
     {
         using model = model::Text;
         using view = view::Text;
+        using controller = controller::Text;
     };
 
     struct Particles
     {
         using model = model::Particles;
         using view = view::Particles;
+        using controller = controller::Particles;
+    };
+
+    struct Selection
+    {
+        using model = model::Selection;
+        using view = view::Selection;
+        using controller = controller::Selection;
     };
 }

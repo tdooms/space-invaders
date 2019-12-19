@@ -1,6 +1,9 @@
 {
-  "name": "duo",
-  "description": "shoots 2 bullets",
+  "info":
+  {
+    "name": "duo",
+    "description": "shoots 2 bullets"
+  },
   "stats":
   {
     "speed": 0.02,

@@ -13,9 +13,11 @@
 #include "../models/structs.h"
 #include "../util/vec.h"
 #include "../util/random.h"
-#include "json.h"
 #include "../views/playerInfo.h"
+
+#include "json.h"
 #include <chrono>
+#include <fstream>
 
 
 namespace parser
@@ -57,6 +59,31 @@ namespace parser
         return result;
     }
 
+    static bool loadAndAddPlayer(const std::filesystem::path& path, core::World& world)
+    {
+        try
+        {
+            const auto json = openJson(path);
+
+            const auto start = Vec2d(json["stats"]["startX"], json["stats"]["startY"]);
+            const auto velocity = Vec2d();
+            const auto dim = Vec2d(json["stats"]["size"], json["stats"]["size"]);
+            const double lives = json["stats"]["lives"];
+            const util::Color color = {std::make_tuple(json["stats"]["color"][0], json["stats"]["color"][1], json["stats"]["color"][2])};
+            const std::string texture = json["stats"]["texture"];
+            const auto bulletInfo = parseBulletInfo(json["bullets"]);
+
+            const auto id = world.addEntity<entities::Player>(std::tuple(start, velocity, dim, lives, color, texture, bulletInfo));
+            world.addViewToEntity<view::PlayerInfo>(id);
+        }
+        catch(std::exception& e)
+        {
+            std::cerr << e.what();
+            return false;
+        }
+        return true;
+    }
+
     static bool loadAndAddShield(const std::filesystem::path& path, core::World& world)
     {
         try
@@ -80,13 +107,11 @@ namespace parser
         return true;
     }
 
-    static bool loadAndAddPlayer(const std::filesystem::path& path, core::World& world, bool addPlayerInfo = true)
+    static bool loadAndAddPreview(const nlohmann::json& json, core::World& world, Vec2d pos)
     {
         try
         {
-            const auto json = openJson(path);
-
-            const auto start = Vec2d(json["stats"]["startX"], json["stats"]["startY"]);
+            const auto start = pos;
             const auto velocity = Vec2d();
             const auto dim = Vec2d(json["stats"]["size"], json["stats"]["size"]);
             const double lives = json["stats"]["lives"];
@@ -94,8 +119,7 @@ namespace parser
             const std::string texture = json["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(json["bullets"]);
 
-            const auto id = world.addEntity<entities::Player>(std::tuple(start, velocity, dim, lives, color, texture, bulletInfo));
-            if(addPlayerInfo) world.addViewToEntity<view::PlayerInfo>(id);
+            world.addEntity<entities::Enemy>(std::tuple(start, velocity, dim, lives, color, texture, bulletInfo));
         }
         catch(std::exception& e)
         {
@@ -105,7 +129,7 @@ namespace parser
         return true;
     }
 
-    static bool loadAndAddSelection(const std::filesystem::path& path, core::World& world)
+    static size_t loadAndAddSelection(const std::filesystem::path& path, core::World& world)
     {
         std::vector<nlohmann::json> choices;
 
@@ -115,7 +139,9 @@ namespace parser
         }
         for(const auto& elem : std::filesystem::directory_iterator(path.string()))
         {
-            choices.emplace_back(elem.path());
+            std::fstream file(elem.path());
+            auto json = nlohmann::json::parse(file);
+            choices.emplace_back(std::move(json));
         }
 
         if(choices.empty())
@@ -123,33 +149,27 @@ namespace parser
             throw std::runtime_error("no players in the player folder");
         }
 
-        std::vector<std::pair<std::string, std::string>> data;
+        std::vector<std::string> names;
+
         for(const auto& elem : choices)
         {
-            data.emplace_back(elem["name"], elem["description"]);
+            names.emplace_back(elem["info"]["name"]);
         }
 
-        constexpr double firstRowHeight = 1;
-        constexpr double secondRowHeight = -1;
+        const auto id = world.addObject<objects::Selection>(std::tuple(path, std::move(names)));
 
-        size_t numOnFirstRow = data.size() / 2;
-        size_t numOnSecondRow = data.size() - numOnFirstRow;
+        const auto offset = 8.0 / static_cast<double>(choices.size());
 
-        double firstSpace = 8.0 / static_cast<double>(numOnFirstRow + 1);
-        double secondSpace = 8.0 / static_cast<double>(numOnSecondRow + 1);
-
-        auto currPos = Vec2d(firstSpace, firstRowHeight);
-        for(size_t i = 0; i < data.size(); i++)
+        auto currPos = Vec2d(-4.0 + 0.5 * offset, 1);
+        for(const auto& choice : choices)
         {
-            world.addObject<objects::Text>(std::tuple(data[i].first, currPos, 20));
-            world.addObject<objects::Text>(std::tuple(data[i].second, currPos + Vec2d(0, 0.3), 12));
-
-            if(i == numOnFirstRow) currPos = Vec2d(secondSpace, secondRowHeight);
-            else if(i < numOnFirstRow) currPos.x += firstSpace;
-            else currPos.x += secondSpace;
+            loadAndAddPreview(choice, world, currPos + Vec2d(0, -0.4));
+            world.addObject<objects::Text>(std::tuple(choice["info"]["name"], currPos, 20));
+            world.addObject<objects::Text>(std::tuple(choice["info"]["description"], currPos + Vec2d(0, 0.3), 11));
+            currPos.x += offset;
         }
 
-        return true;
+        return id;
     }
 
     static bool loadAndAddLevel(const std::filesystem::path& path, core::World& world)
@@ -168,16 +188,15 @@ namespace parser
             const auto velocity = Vec2d(enemyJson["stats"]["horizontalSpeed"], enemyJson["stats"]["downSpeed"]);
             const auto dim = Vec2d(enemyJson["stats"]["size"], enemyJson["stats"]["size"]);
             const double lives = enemyJson["stats"]["lives"];
-            const util::Color color = {std::make_tuple(enemyJson["stats"]["color"][0], enemyJson["stats"]["color"][1], enemyJson["stats"]["color"][2])};
+            const util::Color color = util::Color::fromJson(enemyJson["stats"]["color"]);
 
-            const std::vector<std::string> textures = enemyJson["stats"]["textures"];
+            const std::string texture = enemyJson["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(enemyJson["bullets"]);
 
             auto curr = start + dim;
 
             for(size_t i = 0; i < numEnemies; i++)
             {
-                const auto& texture = textures[0];
                 world.addEntity<entities::Enemy>(std::tuple(curr, velocity, dim, lives, color, texture, bulletInfo));
 
                 // calculate next position

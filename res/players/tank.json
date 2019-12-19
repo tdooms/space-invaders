@@ -1,6 +1,9 @@
 {
-  "name": "tank",
-  "description": "has lots of life",
+  "info":
+  {
+    "name": "tank",
+    "description": "has lots of life"
+  },
   "stats":
   {
     "speed": 0.01,
@@ -20,7 +23,7 @@
 
     "cooldownTime": 500,
     "speed": 0.04,
-    "size": 0.06,
+    "size": 0.05,
     "damage": 1.5,
     "pierce": 1,
 

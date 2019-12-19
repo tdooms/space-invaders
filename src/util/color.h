@@ -12,6 +12,7 @@
 
 #include <SFML/Graphics/Color.hpp>
 #include <tuple>
+#include "../parsers/json.h"
 
 namespace util
 {
@@ -22,6 +23,13 @@ namespace util
         static sf::Color toSfColor(Color color) noexcept
         {
             return sf::Color(std::get<0>(color.data), std::get<1>(color.data), std::get<2>(color.data));
+        }
+
+        static Color fromJson(const nlohmann::json& json)
+        {
+            Color color;
+            color.data = std::make_tuple(json[0], json[1], json[2]);
+            return color;
         }
     };
 

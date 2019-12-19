@@ -46,7 +46,7 @@ void Projectile::collide([[maybe_unused]] CollisionData data) noexcept
     }
     if(pierce == 0)
     {
-        removeData = RemoveData(0, Flags::particles, pos, dim, vel, 5);
+        removeData = RemoveData(0, Flags::particles, pos, dim, vel, 2);
     }
 }
 
