@@ -29,7 +29,7 @@ namespace controller
             const auto num = model.getNum();
             const auto curr = model.getChoice();
 
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
             {
                 model.confirm();
             }
@@ -41,7 +41,7 @@ namespace controller
                 cooldown.start(200ms);
                 model.choose(curr - 1);
             }
-            if(curr != num - 1 and sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+            if(curr != num - 1 and sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
                 cooldown.start(200ms);
                 model.choose(curr + 1);
