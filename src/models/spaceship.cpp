@@ -16,7 +16,10 @@
 
 namespace model
 {
-Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletInfo bulletInfo) :
+
+using namespace inheritable;
+
+Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletData bulletInfo) :
 Entity(type, side), pos(pos), vel(vel), dim(dim), lives(lives), maxLives(lives), startColor(startColor), deathColor(deathColor), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
 
 void Spaceship::update(core::World& world)
@@ -40,23 +43,42 @@ void Spaceship::update(core::World& world)
 
         shootCooldown.start(bulletInfo.cooldownTime);
     }
-    
+
+    setWorld(world);
     shouldShoot = false;
     pos += vel;
     send(Event::valueChanged);
 }
 
-CollidableData Spaceship::getCollidableData() const noexcept
+CollideData Spaceship::getCollideData() const noexcept
 {
-    CollidableData data;
-    data.position = pos;
-    data.velocity = vel;
-    data.dimensions = dim;
+    CollideData data;
+    data.pos = pos;
+    data.vel = vel;
+    data.dim = dim;
+
     data.rotation = 0.0;
     data.damage = 1.0;
     data.mass = 1.0;
+
     data.type = type;
     data.side = side;
+
+    return data;
+}
+
+ExplodeData Spaceship::getExplodeData() const noexcept
+{
+    ExplodeData data;
+    data.pos = pos;
+    data.vel = vel;
+    data.dim = dim;
+
+    data.color = getColor();
+    data.num = (side == Side::player) ? 200 : 50;
+
+    data.minSize = 0.0;
+    data.maxSize = 0.2;
 
     return data;
 }
@@ -68,30 +90,39 @@ void Spaceship::collide(CollisionData data) noexcept
     {
         if(other.type == Type::spaceship)
         {
-            vel.x = other.velocity.x;
-            if(pos.x > other.position.x)
+            vel.x = other.vel.x;
+            if(pos.x > other.pos.x)
             {
-                pos.x = other.position.x + other.dimensions.x + dim.x;
+                pos.x = other.pos.x + other.dim.x + dim.x;
             }
             else
             {
-                pos.x = other.position.x - (other.dimensions.x + dim.x);
+                pos.x = other.pos.x - (other.dim.x + dim.x);
             }
         }
     }
     else if(side != other.side)
     {
+        if(lives - other.damage < 0) explode();
+        if(side == Side::player and other.damage > 0) explode();
         lives -= other.damage;
     }
 
     if(lives <= 0)
     {
-        if (side == Side::player) removeData = RemoveData(0, Flags::gameOver | Flags::particles, pos, dim, vel, 50);
-        else removeData = RemoveData(10, Flags::particles, pos, dim, vel, 10);
+        if(side == Side::player)
+        {
+            reaction = Reaction::defeat;
+        }
+        else
+        {
+            reaction = Reaction::remove;
+            scoreChange += 10;
+        }
     }
 }
 
-void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
+void Spaceship::bounce(BounceBox box, Wall wall) noexcept
 {
     if(side == Side::player)
     {
@@ -138,7 +169,7 @@ void Spaceship::bounce(struct BounceBox box, enum Wall wall) noexcept
                 break;
 
             case Wall::bottom:
-                removeData = RemoveData(0, Flags::gameOver);
+                reaction = Reaction::defeat;
                 break;
         }
     }
@@ -196,6 +227,6 @@ void Spaceship::shoot() noexcept
 
 [[nodiscard]] util::Color Spaceship::getColor() const noexcept
 {
-    return util::Color::lerp(startColor, deathColor, lives / maxLives);
+    return util::Color::lerp(deathColor, startColor, lives / maxLives);
 }
 }

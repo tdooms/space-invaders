@@ -10,14 +10,20 @@
 
 #pragma once
 
-#include "../models/structs.h"
 #include "../util/vec.h"
+#include "../util/cooldown.h"
 #include "../util/random.h"
+#include "../util/color.h"
+
+#include "../core/entities.h"
+#include "../core/objects.h"
 #include "../views/playerInfo.h"
 
 #include "json.h"
+
 #include <chrono>
 #include <fstream>
+#include <filesystem>
 
 
 namespace parser
@@ -38,9 +44,9 @@ namespace parser
         return nlohmann::json::parse(file);
     }
 
-    static model::BulletInfo parseBulletInfo(const nlohmann::json& json)
+    static model::BulletData parseBulletInfo(const nlohmann::json& json)
     {
-        model::BulletInfo result;
+        model::BulletData result;
         result.texture = json["texture"];
         result.color = util::Color::fromJson(json["color"]);
         result.cooldownTime = std::chrono::milliseconds(json["cooldownTime"]);
@@ -89,14 +95,16 @@ namespace parser
         try
         {
             const auto json = openJson(path);
+            const auto dimensions = Vec2d(json["stats"]["dimX"], json["stats"]["dimY"]);
+            const double lives = json["stats"]["lives"];
+            const auto color = util::Color::fromJson(json["stats"]["color"]);
+            const auto texture = json["stats"]["texture"];
+
+
             for(const auto& elem : json["shields"])
             {
                 const auto posititon = Vec2d(elem["posX"], elem["posY"]);
-                const auto dimensions = Vec2d(elem["dimX"], elem["dimY"]);
-                const double lives = elem["lives"];
-                const auto texture = elem["texture"];
-
-                world.addEntity<entities::Shield>(std::tuple(posititon, dimensions, lives, texture));
+                world.addEntity<entities::Shield>(std::tuple(posititon, dimensions, lives, color, texture));
             }
         }
         catch(std::exception& e)

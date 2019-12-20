@@ -13,6 +13,8 @@
 #include "../controllers/text.h"
 #include "../controllers/particles.h"
 #include "../controllers/selection.h"
+#include "../controllers/leaderboard.h"
+#include "../controllers/score.h"
 
 namespace objects
 {
@@ -21,6 +23,13 @@ namespace objects
         using model = model::Text;
         using view = view::Text;
         using controller = controller::Text;
+    };
+
+    struct Score
+    {
+        using model = model::Score;
+        using view = view::Score;
+        using controller = controller::Score;
     };
 
     struct Particles
@@ -35,5 +44,12 @@ namespace objects
         using model = model::Selection;
         using view = view::Selection;
         using controller = controller::Selection;
+    };
+
+    struct Leaderboard
+    {
+        using model = model::Leaderboard;
+        using view = view::Leaderboard;
+        using controller = controller::Leaderboard;
     };
 }

@@ -12,10 +12,12 @@
 #include <thread>
 #include <iostream>
 #include <chrono>
-#include <memory>
 
 #include <SFML/Graphics.hpp>
+
 #include "../parsers/parser.h"
+#include "entities.h"
+#include "objects.h"
 
 using namespace std::chrono;
 
@@ -25,40 +27,41 @@ namespace core
 
 void Game::setup()
 {
-    id = parser::loadAndAddSelection("res/players", worlds[current]);
-
-    worlds[end].addObject<objects::Text>(std::tuple("game over", Vec2d(0, 0), 100));
+    id = parser::loadAndAddSelection("res/players", worlds[WorldType::start]);
 }
 
 void Game::update(Stage stage)
 {
     if(current == WorldType::start)
     {
-        const auto selector = dynamic_cast<model::Selection&>(*worlds[current].findModel(id)->second);
+        const auto& selector = dynamic_cast<model::Selection&>(*worlds[current].findModel(id)->second);
         if(selector.isConfirmed())
         {
             current = WorldType::main;
+
             parser::loadAndAddPlayer(selector.getPath(), worlds[current]);
             parser::loadAndAddShield("res/shields/shield-config.json", worlds[current]);
+            parser::loadAndAddLevel("res/levels/level" + std::to_string(level++) + ".json", worlds[current]);
+            worlds[WorldType::main].addObject<objects::Score>(std::tuple(Vec2d(3.6, -2.8), 30));
         }
     }
     if(current == WorldType::main)
     {
-        if(stage == Stage::done)
+        if(stage == Stage::victory)
         {
-            parser::loadAndAddLevel("res/levels/level" + std::to_string(level) + ".json", worlds[current]);
-            level++;
+            parser::loadAndAddLevel("res/levels/level" + std::to_string(level++) + ".json", worlds[current]);
         }
         if(stage == Stage::defeat)
         {
-            current = end;
+            current = WorldType::end;
+            worlds[end].addObject<objects::Leaderboard>(std::tuple("res/data/leaderboard.json", worlds[WorldType::main].getScore()));
         }
     }
 }
 
 void Game::startGame()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "space invaders", sf::Style::Titlebar | sf::Style::Close);
     setup();
 
     // we initialize some variables used in the main game loop

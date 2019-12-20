@@ -13,7 +13,10 @@
 
 #include <unordered_set>
 #include "../collision/detector.h"
-#include "game.h"
+
+#include "../controllers/world.h"
+#include "../models/world.h"
+#include "../views/world.h"
 
 namespace core
 {
@@ -22,7 +25,7 @@ namespace core
         start,
         normal,
         defeat,
-        done
+        victory
     };
 
     class World
@@ -39,14 +42,13 @@ namespace core
 
         Stage update()
         {
+            stage = Stage::normal;
+
             worldController->update();
             worldModel->update(*this);
 
             collision::detect(worldModel);
             tryRemoveEntities();
-
-            if(enemies.empty()) stage = Stage::done;
-            else stage = Stage::normal;
 
             return stage;
         }
@@ -117,22 +119,26 @@ namespace core
 
         void tryRemoveEntities()
         {
-            std::vector<std::pair<size_t, model::RemoveData>> toRemove;
+            std::vector<std::pair<size_t, size_t>> toRemove;
             for(const auto& [id, model] : *worldModel)
             {
-                const auto data = model->getRemoveData();
-                if(data.has_value()) toRemove.emplace_back(id, data.value());
+                if(model->getReaction() == model::Reaction::remove)
+                {
+                    toRemove.emplace_back(id, model->getScoreChange());
+                }
+                else if(model->getReaction() == model::Reaction::defeat)
+                {
+                    stage = Stage::defeat;
+                }
+                else if(model->getReaction() == model::Reaction::victory)
+                {
+                    stage = Stage::victory;
+                }
             }
 
-            for(const auto [id, data] : toRemove)
+            for(const auto& [id, scoreChange] : toRemove)
             {
-                if(data.isGameOver()) stage = Stage::defeat;
-                score += data.scoreChange;
-
-                if(data.isParticles())
-                {
-                    addObject<objects::Particles>(std::tuple(data.pos, data.dim, data.vel, data.numParticles));
-                }
+                score += scoreChange;
 
                 worldModel->erase(id);
                 worldView->erase(id);
@@ -140,6 +146,8 @@ namespace core
 
                 enemies.erase(id);
             }
+
+            if(enemies.empty()) stage = Stage::victory;
         }
 
         std::shared_ptr<model::World> worldModel;

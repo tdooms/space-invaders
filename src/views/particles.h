@@ -42,6 +42,8 @@ namespace view
 
                 shapes[i].setPosition(pos);
                 shapes[i].setRadius(radius);
+
+                shapes[i].setFillColor(util::Color::toSfColor(model.getColor()));
             }
         }
 

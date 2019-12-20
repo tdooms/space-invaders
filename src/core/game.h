@@ -10,13 +10,7 @@
 
 #pragma once
 
-#include "../controllers/abstract.h"
-#include "../controllers/world.h"
-#include "entities.h"
-#include "objects.h"
 #include "world.h"
-
-using namespace std::chrono_literals;
 
 namespace core
 {

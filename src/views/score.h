@@ -1,7 +1,7 @@
 //============================================================================
-// @name        : text.h
+// @name        : score.h
 // @author      : Thomas Dooms
-// @date        : 12/13/19
+// @date        : 12/20/19
 // @version     : 
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
 // @description : 
@@ -18,10 +18,10 @@
 
 namespace view
 {
-    class Text final : public view::Abstract
+    class Score final : public view::Abstract
     {
     public:
-        explicit Text(std::shared_ptr<model::Text> model) : Abstract(std::move(model)), text()
+        explicit Score(std::shared_ptr<model::Score> model) : Abstract(std::move(model)), text()
         {
             text.setFont(*SfManager::getFont("LemonMilk.otf"));
             receive(Event::valueChanged);
@@ -31,7 +31,7 @@ namespace view
         {
             if(type != Event::valueChanged) return;
 
-            auto& model = dynamic_cast<model::Text&>(*this->model);
+            auto& model = dynamic_cast<model::Score&>(*this->model);
             text.setString(model.getString());
             text.setFillColor(sf::Color::White);
             text.setPosition(util::Transform::get().transform(model.getPosition()));

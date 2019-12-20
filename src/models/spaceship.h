@@ -11,24 +11,45 @@
 #pragma once
 
 #include "../util/cooldown.h"
-#include "../collision/collidable.h"
-#include "structs.h"
+#include "../util/color.h"
+
+#include "../inheritables/collidable.h"
+#include "../inheritables/explodable.h"
 #include "entity.h"
 
 namespace model
 {
-    class Spaceship : public Entity , public Collidable
+
+    struct BulletData
+    {
+        std::string texture;
+        util::Color color;
+
+        std::chrono::milliseconds cooldownTime;
+        double speed;
+        Vec2d dim;
+        double damage;
+        size_t pierce;
+
+        double shootAngle;
+        double spreadAngle;
+        size_t numBullets;
+    };
+
+    class Spaceship : public Entity , public inheritable::Collidable, public inheritable::Explodable
     {
     public:
-        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletInfo info);
+        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletData info);
 
         void update(core::World& world) override;
 
-        [[nodiscard]] CollidableData getCollidableData() const noexcept override;
+        [[nodiscard]] inheritable::CollideData getCollideData() const noexcept override;
 
-        void collide(CollisionData data) noexcept override;
+        [[nodiscard]] inheritable::ExplodeData getExplodeData() const noexcept override;
 
-        void bounce(BounceBox box, Wall wall) noexcept override;
+        void collide(inheritable::CollisionData data) noexcept override;
+
+        void bounce(inheritable::BounceBox box, inheritable::Wall wall) noexcept override;
 
         void accelerate(Vec2d acceleration) noexcept;
 
@@ -65,7 +86,7 @@ namespace model
         std::string tex;
 
         bool shouldShoot = false;
-        BulletInfo bulletInfo;
+        BulletData bulletInfo;
         util::Cooldown shootCooldown;
     };
 }

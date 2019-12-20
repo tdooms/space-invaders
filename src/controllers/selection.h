@@ -11,6 +11,7 @@
 #pragma once
 
 #include "abstract.h"
+#include "../util/cooldown.h"
 #include "../models/selection.h"
 #include "../views/selection.h"
 
@@ -41,7 +42,7 @@ namespace controller
                 cooldown.start(200ms);
                 model.choose(curr - 1);
             }
-            if(curr != num - 1 and sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            else if(curr != num - 1 and sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
                 cooldown.start(200ms);
                 model.choose(curr + 1);

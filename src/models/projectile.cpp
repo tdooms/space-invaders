@@ -13,27 +13,45 @@
 
 namespace model
 {
+using namespace inheritable;
 
 Projectile::Projectile(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double damage, size_t pierce, util::Color color, std::string texture)
         : Entity(type, side), pos(pos), vel(vel), dim(dim), damage(damage), pierce(pierce + 1), color(color), texture(std::move(texture)) {}
 
 void Projectile::update([[maybe_unused]] core::World& world)
 {
+    setWorld(world);
     pos += vel;
     send(Event::valueChanged);
 }
 
-[[nodiscard]] CollidableData Projectile::getCollidableData() const noexcept
+[[nodiscard]] CollideData Projectile::getCollideData() const noexcept
 {
-    CollidableData data;
-    data.position = pos;
-    data.velocity = vel;
-    data.dimensions = dim;
+    CollideData data;
+    data.pos = pos;
+    data.vel = vel;
+    data.dim = dim;
     data.rotation = 0;
     data.damage = damage;
     data.mass = 1;
     data.type = type;
     data.side = side;
+
+    return data;
+}
+
+ExplodeData Projectile::getExplodeData() const noexcept
+{
+    ExplodeData data;
+    data.pos = pos;
+    data.vel = vel;
+    data.dim = dim;
+
+    data.color = getColor();
+    data.num = 10;
+
+    data.minSize = 0.0;
+    data.maxSize = 0.1;
 
     return data;
 }
@@ -46,13 +64,14 @@ void Projectile::collide(CollisionData data) noexcept
     }
     if(pierce == 0)
     {
-        removeData = RemoveData(0, Flags::particles, pos, dim, vel, 2);
+        explode();
+        reaction = Reaction::remove;
     }
 }
 
 void Projectile::bounce([[maybe_unused]] BounceBox box, [[maybe_unused]] Wall wall) noexcept
 {
-    removeData = RemoveData(0);
+    reaction = Reaction ::remove;
 }
 
 Vec2d Projectile::getDimensions() const noexcept

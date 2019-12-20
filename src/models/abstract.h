@@ -11,24 +11,47 @@
 #pragma once
 
 #include "../observer/subject.h"
-#include "../util/vec.h"
-#include "structs.h"
 #include <optional>
 
 namespace core { class World; }
 
 namespace model
 {
+    enum class Type
+    {
+        spaceship,
+        projectile,
+        shield
+    };
+
+    enum class Side
+    {
+        player,
+        enemy,
+        neutral
+    };
+
+    enum class Reaction
+    {
+        none,
+        remove,
+        victory,
+        defeat
+    };
+
     class Abstract : public Subject
     {
     public:
         Abstract() = default;
         virtual ~Abstract() = default;
 
-        std::optional<RemoveData> getRemoveData() noexcept { return removeData; }
+        [[nodiscard]] Reaction getReaction() { return reaction; }
+        [[nodiscard]] int getScoreChange() { return scoreChange; }
+
         virtual void update(core::World& world) = 0;
 
     protected:
-        std::optional<RemoveData> removeData;
+        Reaction reaction = Reaction::none;
+        int scoreChange = 0;
     };
 }
