@@ -7,7 +7,6 @@
 // @description : 
 //============================================================================
 
-
 #pragma once
 
 #include "world.h"
@@ -29,6 +28,8 @@ public:
     // but 20ms of actual time has passed. To ensure all time is accounted for, all passed time is
     // stored in unprocessedTime, and then the engine processes as much time as it can. Any
     // unaccounted time can then be processed later, since it will remain stored in unprocessedTime.
+
+    // Game engine design ideas stolen from https://github.com/BennyQBD/CGFX5
     int start();
 
 private:

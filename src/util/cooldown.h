@@ -15,6 +15,7 @@
 
 namespace util
 {
+    // a very useful class that uses the stopwatch to simulate a cooldown
     struct Cooldown
     {
     public:

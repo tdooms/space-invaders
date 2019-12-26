@@ -15,6 +15,7 @@
 
 namespace model
 {
+// a simple text model containing a string
 class Text : public Object
 {
 public:

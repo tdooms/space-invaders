@@ -18,6 +18,7 @@
 namespace model
 {
 
+// this class actually does nothing more than get removed when it hits something
 class Projectile : public Entity , public inheritable::Collidable, public inheritable::Explodable
 {
 

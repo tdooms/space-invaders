@@ -20,10 +20,14 @@ namespace inheritable { struct ExplodeData; }
 
 namespace model
 {
+    // contains all the data for a particle
     struct Particle
     {
-        Vec2d position;
-        Vec2d velocity;
+        Particle(Vec2d pos, Vec2d vel, util::Color color, double radius)
+        : pos(pos), vel(vel), color(color), radius(radius) {}
+
+        Vec2d pos;
+        Vec2d vel;
         util::Color color;
         double radius;
     };

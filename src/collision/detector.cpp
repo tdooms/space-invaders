@@ -7,15 +7,6 @@
 // @description : 
 //============================================================================
 
-//============================================================================
-// @name        : collision.h
-// @author      : Thomas Dooms
-// @date        : 12/5/19
-// @version     :
-// @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
-// @description :
-//============================================================================
-
 #include "detector.h"
 #include "../inheritables/collidable.h"
 #include "../models/world.h"
@@ -38,9 +29,7 @@ namespace collision
         }
     }
 
-    // we need to detect every object first before acting on it.
-    // if objects a and b, collide and objects b, c also.
-    // if we remove a and b, and we remove them, c wouldn't be removed, which it should be.
+
     void detect(std::shared_ptr<model::World>& world)
     {
         // id, and collidable
@@ -57,6 +46,7 @@ namespace collision
 
         const BounceBox box = {4, -4, 3, -3};
 
+        // check if they bounced
         for(const auto& [id, collidable] : collidables)
         {
             const auto data = collidable->getCollideData();
@@ -80,6 +70,7 @@ namespace collision
             }
         }
 
+        // check if they collided
         for(size_t i = 0; i < collidables.size(); i++)
         {
             auto data0 = collidables[i].second->getCollideData();
@@ -96,7 +87,7 @@ namespace collision
             }
         }
 
-
+        // notify them they have collided
         for(const auto& [index, data] : toResolve)
         {
             collidables[index].second->collide(data);

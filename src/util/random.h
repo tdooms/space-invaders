@@ -14,6 +14,7 @@
 
 namespace util
 {
+    // A simple random class with some special utilities.
     class Random
     {
     public:

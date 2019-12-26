@@ -28,124 +28,31 @@ namespace core
     class World
     {
     public:
-        World()
-        {
-            worldModel = std::make_shared<model::World>();
-            worldView = std::make_shared<view::World>(worldModel);
-            worldController = std::make_shared<controller::World>(worldModel, worldView);
+        World();
 
-            enemies = {};
-        }
+        auto findModel(size_t id){ return worldModel->find(id); }
 
-        Stage update()
-        {
-            stage = Stage::normal;
+        Stage update();
 
-            worldController->update();
-            worldModel->update(*this);
+        size_t getScore();
 
-            collision::detect(worldModel);
-            tryRemoveEntities();
+        void draw(sf::RenderWindow& window);
 
-            return stage;
-        }
-
-        size_t getScore()
-        {
-            return score;
-        }
-
-        auto findModel(size_t id)
-        {
-            return worldModel->find(id);
-        }
-
-        void draw(sf::RenderWindow& window)
-        {
-            worldView->draw(window);
-        }
+        // these templated functions probably seem very complicated becaause they need to be very general.
+        // in essence all they do is take the parameters for the model view and controllers
+        // and use them to construct and add them to the world.
+        template<typename Object, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
+        size_t addObject(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {});
 
         template<typename Entity, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
-        size_t addEntity(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {})
-        {
-            const auto tuple = std::make_tuple(Entity::type::value, Entity::side::value);
-            const auto id = addObject<Entity>(std::tuple_cat(tuple, modelArgs), std::forward<std::tuple<ViewArgs...>>(viewArgs), std::forward<std::tuple<ControllerArgs...>>(controllerArgs));
-
-            if(Entity::type::value == model::Type::spaceship)
-            {
-                if(Entity::side::value == model::Side::enemy) enemies.emplace(id);
-                else if(Entity::side::value == model::Side::player) players.emplace(id);
-            }
-            return id;
-        }
+        size_t addEntity(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {});
 
         template<typename View, typename... ViewArgs>
-        void addViewToEntity(size_t id, ViewArgs&&... args)
-        {
-            auto model = worldModel->find(id)->second;
-            auto view = std::make_shared<View>(model, std::forward<ViewArgs>(args)...);
-
-            model->addObserver(view);
-            worldView->emplace(id, std::move(view));
-        }
-
-
-        template<typename Object, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
-        size_t addObject(std::tuple<ModelArgs...>&& modelArgs = {}, std::tuple<ViewArgs...>&& viewArgs = {}, std::tuple<ControllerArgs...>&& controllerArgs = {})
-        {
-            // we need lambda functions to wrap the make shared template function, this way it doesn't stay in the way of template argument resolution for std::apply
-            const auto modelmaker = [](auto... args){ return std::make_shared<typename Object::model>(args...); };
-            const auto viewmaker = [](auto... args){ return std::make_shared<typename Object::view>(args...); };
-            const auto controllermaker = [](auto... args){ return std::make_shared<typename Object::controller>(args...); };
-
-            // we call apply to apply the tuple arguments to the lambda's to make our unique pointers
-            auto model = std::apply(modelmaker, modelArgs);
-            auto view = std::apply(viewmaker, std::tuple_cat(std::make_tuple(model), viewArgs));
-            auto controller = std::apply(controllermaker, std::tuple_cat(std::make_tuple(model, view), controllerArgs));
-
-            model->addObserver(view);
-
-            worldModel->emplace(currId, std::move(model));
-            worldView->emplace(currId, std::move(view));
-            worldController->emplace(currId, std::move(controller));
-
-            return currId++;
-        }
+        void addViewToEntity(size_t id, ViewArgs&&... args);
 
     private:
 
-        void tryRemoveEntities()
-        {
-            std::vector<std::pair<size_t, size_t>> toRemove;
-            for(const auto& [id, model] : *worldModel)
-            {
-                if(model->getReaction() == model::Reaction::remove)
-                {
-                    toRemove.emplace_back(id, model->getScoreChange());
-                }
-                else if(model->getReaction() == model::Reaction::defeat)
-                {
-                    stage = Stage::defeat;
-                }
-                else if(model->getReaction() == model::Reaction::victory)
-                {
-                    stage = Stage::victory;
-                }
-            }
-
-            for(const auto& [id, scoreChange] : toRemove)
-            {
-                score += scoreChange;
-
-                worldModel->erase(id);
-                worldView->erase(id);
-                worldController->erase(id);
-
-                enemies.erase(id);
-            }
-
-            if(enemies.empty()) stage = Stage::victory;
-        }
+        void tryRemoveEntities();
 
         std::shared_ptr<model::World> worldModel;
         std::shared_ptr<view::World> worldView;
@@ -159,4 +66,51 @@ namespace core
 
         Stage stage = Stage::start;
     };
+
+
+    template<typename Object, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
+    size_t World::addObject(std::tuple<ModelArgs...>&& modelArgs, std::tuple<ViewArgs...>&& viewArgs, std::tuple<ControllerArgs...>&& controllerArgs)
+    {
+        // we need lambda functions to wrap the make shared template function, this way it doesn't stay in the way of template argument resolution for std::apply
+        const auto modelmaker = [](auto... args){ return std::make_shared<typename Object::model>(args...); };
+        const auto viewmaker = [](auto... args){ return std::make_shared<typename Object::view>(args...); };
+        const auto controllermaker = [](auto... args){ return std::make_shared<typename Object::controller>(args...); };
+
+        // we call apply to apply the tuple arguments to the lambda's to make our shared pointers
+        auto model = std::apply(modelmaker, modelArgs);
+        auto view = std::apply(viewmaker, std::tuple_cat(std::make_tuple(model), viewArgs));
+        auto controller = std::apply(controllermaker, std::tuple_cat(std::make_tuple(model, view), controllerArgs));
+
+        model->addObserver(view);
+
+        worldModel->emplace(currId, std::move(model));
+        worldView->emplace(currId, std::move(view));
+        worldController->emplace(currId, std::move(controller));
+
+        return currId++;
+    }
+
+    template<typename Entity, typename... ModelArgs, typename... ViewArgs, typename... ControllerArgs>
+    size_t World::addEntity(std::tuple<ModelArgs...>&& modelArgs, std::tuple<ViewArgs...>&& viewArgs, std::tuple<ControllerArgs...>&& controllerArgs)
+    {
+        const auto tuple = std::make_tuple(Entity::type::value, Entity::side::value);
+        const auto id = addObject<Entity>(std::tuple_cat(tuple, modelArgs), std::forward<std::tuple<ViewArgs...>>(viewArgs), std::forward<std::tuple<ControllerArgs...>>(controllerArgs));
+
+        if(Entity::type::value == model::Type::spaceship)
+        {
+            if(Entity::side::value == model::Side::enemy) enemies.emplace(id);
+            else if(Entity::side::value == model::Side::player) players.emplace(id);
+        }
+        return id;
+    }
+
+    template<typename View, typename... ViewArgs>
+    void World::addViewToEntity(size_t id, ViewArgs&&... args)
+    {
+        auto model = worldModel->find(id)->second;
+        auto view = std::make_shared<View>(model, std::forward<ViewArgs>(args)...);
+
+        model->addObserver(view);
+        worldView->emplace(id, std::move(view));
+    }
 }

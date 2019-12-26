@@ -15,6 +15,7 @@
 #include <memory>
 #include <vector>
 
+// holds a list of observers
 class Subject
 {
 public:

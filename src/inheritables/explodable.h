@@ -16,6 +16,9 @@ namespace inheritable
 {
     struct ExplodeData
     {
+        ExplodeData(Vec2d pos, Vec2d vel, Vec2d dim, util::Color color, size_t num, double minSize, double maxSize) :
+        pos(pos), vel(vel), dim(dim), color(color), num(num), minSize(minSize), maxSize(maxSize) {}
+
         Vec2d pos;
         Vec2d vel;
         Vec2d dim;
@@ -39,6 +42,8 @@ namespace inheritable
         void explode();
 
     private:
+        // the only use of a raw pointer, this is not unique nor shared
+        // c++20's std::observer_ptr would do the trick but alas we can't use it.
         core::World* world = nullptr;
     };
 }

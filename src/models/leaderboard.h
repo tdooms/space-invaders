@@ -18,6 +18,8 @@
 
 namespace model
 {
+    // big class but almost every function is trivial
+    // so i decided to keep it in the .h file to reduce clutter.
     class Leaderboard : public Object
     {
     public:

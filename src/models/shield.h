@@ -16,6 +16,7 @@
 
 namespace model
 {
+    // this model also just removes itself when it dies
     class Shield : public Entity, public inheritable::Collidable, public inheritable::Explodable
     {
     public:
@@ -44,6 +45,7 @@ namespace model
         Vec2d dim;
 
         double lives;
+        double maxLives;
 
         util::Color color;
         std::string texture;

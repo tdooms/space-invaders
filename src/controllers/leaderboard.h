@@ -22,7 +22,6 @@ class Leaderboard : public controller::Abstract
 public:
     Leaderboard(std::shared_ptr<model::Leaderboard> model, std::shared_ptr<view::Leaderboard> view) : Abstract(std::move(model), std::move(view)) {}
 
-
     void update() override
     {
         using namespace std::literals::chrono_literals;
@@ -37,6 +36,7 @@ public:
 
         if(not cooldown.done()) return;
 
+        // set a small cooldown every time a key was pressed to prevent multiple presses
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
             cooldown.start(200ms);

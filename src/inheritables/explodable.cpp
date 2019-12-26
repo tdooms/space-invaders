@@ -20,6 +20,7 @@ namespace inheritable
     }
     void Explodable::explode()
     {
+        // we add the explosion particles to the world
         if(world == nullptr) return;
         world->addObject<objects::Particles>(std::tuple(getExplodeData()));
     }

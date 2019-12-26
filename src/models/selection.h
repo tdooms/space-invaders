@@ -15,6 +15,7 @@
 
 namespace model
 {
+    // this model just keeps track of the current choice at the start
     class Selection : public Object
     {
     public:

@@ -14,21 +14,19 @@
 
 namespace model
 {
-
-    Particles::Particles(inheritable::ExplodeData data) : particles(data.num)
+    // a lot of random generation to make the particles, doesn't do anything else really
+    Particles::Particles(inheritable::ExplodeData data)
     {
-        for(auto& particle : particles)
+        for(size_t i = 0; i < data.num; i++)
         {
             const auto randomX = util::Random::get().between(data.pos.x - data.dim.x, data.pos.x + data.dim.x);
             const auto randomY = util::Random::get().between(data.pos.y - data.dim.y, data.pos.y + data.dim.y);
             const auto randomVel = util::Random::get().between(0.0, 0.02);
             const auto randomRadius = util::Random::get().between(data.minSize, data.maxSize);
             const auto alpha = util::Random::get().between(200, 255);
+            const auto color = util::Color::addAlpha(data.color, static_cast<uint8_t>(alpha));
 
-            particle.position = Vec2d(randomX, randomY);
-            particle.velocity = data.vel + (Vec2d::randomUnit() * randomVel);
-            particle.radius = randomRadius;
-            particle.color = util::Color::addAlpha(data.color, static_cast<uint8_t>(alpha));
+            particles.emplace_back(Vec2d(randomX, randomY), data.vel + (Vec2d::randomUnit() * randomVel), color, randomRadius);
         }
     }
 
@@ -36,7 +34,7 @@ namespace model
     {
         for(auto& particle : particles)
         {
-            particle.position += particle.velocity;
+            particle.pos += particle.vel;
             if(particle.color.a != 0) particle.color.a -= 1;
         }
         if(--frames == 0) reaction = Reaction::remove;

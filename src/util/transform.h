@@ -15,6 +15,7 @@
 
 namespace util
 {
+    // singleton transform class with a few handy functions
     class Transform
     {
     public:

@@ -15,6 +15,7 @@
 
 namespace util
 {
+    // very simple color class with some helper functions
     struct Color
     {
         Color() noexcept : r(0), g(0), b(0), a(255) {}

@@ -26,6 +26,7 @@ namespace controller
         {
             auto& model = dynamic_cast<model::Spaceship&>(*this->model);
 
+            // apply a random start offset
             if(neverStarted)
             {
                 const size_t temp = model.getCooldownDuration().count();
@@ -33,6 +34,8 @@ namespace controller
                 cooldown.start(std::chrono::milliseconds(time));
                 neverStarted = false;
             }
+
+            // always try to shoot
             if(cooldown.done())
             {
                 model.shoot();

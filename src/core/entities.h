@@ -18,6 +18,9 @@
 namespace entities
 {
     using namespace model;
+    // entities are sort of meta-classes used for combining the model/view and controllers
+    // every entity should have all these fields, they are used to initialize when calling addEntity()
+    // this design is used to be as modular as possible
 
     struct Player
     {

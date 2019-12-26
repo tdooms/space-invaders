@@ -37,6 +37,7 @@ namespace controller
 
             if(not cooldown.done()) return;
 
+            // set a small cooldown every time a key was pressed to prevent multiple presses
             if(curr != 0 and sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
                 cooldown.start(200ms);

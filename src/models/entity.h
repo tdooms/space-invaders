@@ -14,6 +14,7 @@
 
 namespace model
 {
+    // abstract entity type
     class Entity : public model::Abstract
     {
     public:

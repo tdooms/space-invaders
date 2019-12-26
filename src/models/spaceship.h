@@ -19,7 +19,7 @@
 
 namespace model
 {
-
+    // contains all the data to initialize spaceship bullet stats
     struct BulletData
     {
         std::string texture;
@@ -36,10 +36,11 @@ namespace model
         size_t numBullets;
     };
 
+    // the main model for the player and the enemies
     class Spaceship : public Entity , public inheritable::Collidable, public inheritable::Explodable
     {
     public:
-        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletData info);
+        explicit Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double speed, double lives, util::Color color, std::string texture, BulletData info);
 
         void update(core::World& world) override;
 
@@ -52,6 +53,10 @@ namespace model
         void bounce(inheritable::BounceBox box, inheritable::Wall wall) noexcept override;
 
         void accelerate(Vec2d acceleration) noexcept;
+
+        void right() noexcept;
+
+        void left() noexcept;
 
         void shoot() noexcept;
 
@@ -77,12 +82,12 @@ namespace model
         Vec2d pos;
         Vec2d vel;
         Vec2d dim;
+        double speed;
 
         double lives;
         double maxLives;
 
-        util::Color startColor;
-        util::Color deathColor;
+        util::Color color;
         std::string tex;
 
         bool shouldShoot = false;

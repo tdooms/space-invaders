@@ -18,6 +18,7 @@
 
 namespace objects
 {
+    // again, these are metaclasses used for adding objects with addObject()
     struct Text
     {
         using model = model::Text;
