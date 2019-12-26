@@ -20,10 +20,10 @@ namespace view
     {
     public:
         explicit Abstract(std::shared_ptr<model::Abstract> model) : model(std::move(model)) {}
-        virtual ~Abstract() = default;
+        ~Abstract() override = default;
 
         virtual void draw(sf::RenderWindow& window) const = 0;
-        void receive([[maybe_unused]] Event event) = 0;
+        void receive([[maybe_unused]] Event event) override = 0;
 
     protected:
         std::shared_ptr<model::Abstract> model;

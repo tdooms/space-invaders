@@ -42,7 +42,7 @@ ExplodeData Shield::getExplodeData() const noexcept
     data.num = 20;
 
     data.minSize = 0.0;
-    data.maxSize = 0.3;
+    data.maxSize = 0.05;
 
     return data;
 }

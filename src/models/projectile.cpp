@@ -51,7 +51,7 @@ ExplodeData Projectile::getExplodeData() const noexcept
     data.num = 10;
 
     data.minSize = 0.0;
-    data.maxSize = 0.1;
+    data.maxSize = 0.02;
 
     return data;
 }

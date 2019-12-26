@@ -33,20 +33,20 @@ namespace model
             confirmed = true;
         }
 
-        bool isConfirmed() const
+        [[nodiscard]] bool isConfirmed() const
         {
             return confirmed;
         }
-        size_t getChoice() const
+        [[nodiscard]] size_t getChoice() const
         {
             return choice;
         }
-        size_t getNum() const
+        [[nodiscard]] size_t getNum() const
         {
             return ships.size();
         }
 
-        std::filesystem::path getPath() const
+        [[nodiscard]] std::filesystem::path getPath() const
         {
             auto res = base / ships[choice];
             res.replace_extension("json");

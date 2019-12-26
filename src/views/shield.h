@@ -11,7 +11,7 @@
 #pragma once
 
 #include "abstract.h"
-#include "../managers/manager.h"
+#include "../util/manager.h"
 #include "../models/shield.h"
 #include "../util/transform.h"
 

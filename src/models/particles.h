@@ -24,6 +24,7 @@ namespace model
     {
         Vec2d position;
         Vec2d velocity;
+        util::Color color;
         double radius;
     };
 
@@ -36,11 +37,8 @@ namespace model
 
         [[nodiscard]] const std::vector<Particle>& getParticles() const noexcept;
 
-        [[nodiscard]] util::Color getColor() const noexcept;
-
     private:
         std::vector<Particle> particles;
-        util::Color color;
 
         size_t frames = 100;
     };

@@ -24,7 +24,6 @@ namespace util
             return instance;
         }
 
-        template<typename Type = std::chrono::seconds>
         [[nodiscard]] auto time() const noexcept
         {
             return std::chrono::system_clock::now();

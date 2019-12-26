@@ -13,7 +13,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "abstract.h"
-#include "../managers/manager.h"
+#include "../util/manager.h"
 #include "../models/projectile.h"
 #include "../util/transform.h"
 

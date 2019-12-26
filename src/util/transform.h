@@ -27,19 +27,19 @@ namespace util
 
         [[nodiscard]] sf::Vector2f transform(Vec2d coordinates) const noexcept
         {
-            return sf::Vector2f((coordinates.x + 4) * screenSize.x / 8.0, (coordinates.y + 3) * screenSize.y / 6.0);
+            return sf::Vector2f(static_cast<float>((coordinates.x + 4) * screenSize.x / 8.0), static_cast<float>((coordinates.y + 3) * screenSize.y / 6.0));
         }
         [[nodiscard]] sf::Vector2f scale(Vec2d coordinates) const noexcept
         {
-            return sf::Vector2f(coordinates.x * screenSize.x / 8.0, coordinates.y * screenSize.y / 6.0);
+            return sf::Vector2f(static_cast<float>(coordinates.x * screenSize.x / 8.0), static_cast<float>(coordinates.y * screenSize.y / 6.0));
         }
         [[nodiscard]] sf::Vector2f scale(double xCoordinate, double yCoordinate) const noexcept
         {
-            return sf::Vector2f(xCoordinate * screenSize.x / 8.0, yCoordinate * screenSize.y / 6.0);
+            return sf::Vector2f(static_cast<float>(xCoordinate * screenSize.x / 8.0), static_cast<float>(yCoordinate * screenSize.y / 6.0));
         }
-        [[nodiscard]] double scale(double coordinate) const noexcept
+        [[nodiscard]] float scale(double coordinate) const noexcept
         {
-            return coordinate * screenSize.x / 8.0;
+            return static_cast<float>(coordinate * screenSize.x / 8.0);
         }
 
         [[nodiscard]] sf::Vector2u getScreenSize() const noexcept

@@ -7,11 +7,10 @@
 // @description : 
 //============================================================================
 
-
 #pragma once
 
-#include "../core/world.h"
-#include "../core/objects.h"
+#include "../util/vec.h"
+#include "../util/color.h"
 
 namespace inheritable
 {
@@ -36,15 +35,8 @@ namespace inheritable
 
         virtual ExplodeData getExplodeData() const noexcept = 0;
 
-        void setWorld(core::World& w)
-        {
-            world = &w;
-        }
-        void explode()
-        {
-            if(world == nullptr) return;
-            world->addObject<objects::Particles>(std::tuple(getExplodeData()));
-        }
+        void setWorld(core::World& w);
+        void explode();
 
     private:
         core::World* world = nullptr;

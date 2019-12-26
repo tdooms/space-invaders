@@ -13,10 +13,7 @@
 
 #include <unordered_set>
 #include "../collision/detector.h"
-
 #include "../controllers/world.h"
-#include "../models/world.h"
-#include "../views/world.h"
 
 namespace core
 {

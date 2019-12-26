@@ -13,7 +13,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include "abstract.h"
 #include "../util/transform.h"
-#include "../managers/manager.h"
+#include "../util/manager.h"
 #include "../models/text.h"
 
 namespace view

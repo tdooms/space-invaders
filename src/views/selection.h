@@ -17,7 +17,7 @@ namespace view
 class Selection final : public view::Abstract
 {
 public:
-    Selection(std::shared_ptr<model::Selection> model) : Abstract(std::move(model))
+    explicit Selection(std::shared_ptr<model::Selection> model) : Abstract(std::move(model))
     {
         const auto dim = util::Transform::get().scale(Vec2d(0.3, 0.3));
         arrow.setTexture(SfManager::getTexture("arrow").get());

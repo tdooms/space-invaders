@@ -13,7 +13,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include "abstract.h"
 #include "../util/transform.h"
-#include "../managers/manager.h"
+#include "../util/manager.h"
 #include "../models/text.h"
 
 namespace view
@@ -35,7 +35,7 @@ namespace view
             text.setString(model.getString());
             text.setFillColor(sf::Color::White);
             text.setPosition(util::Transform::get().transform(model.getPosition()));
-            text.setCharacterSize(model.getFontSize());
+            text.setCharacterSize(static_cast<unsigned int>(model.getFontSize()));
             text.setOrigin(text.getLocalBounds().width / 2.0f, text.getLocalBounds().height / 2.0f);
         }
 

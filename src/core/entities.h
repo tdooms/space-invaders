@@ -15,9 +15,6 @@
 #include "../controllers/projectile.h"
 #include "../controllers/shield.h"
 
-#include "../models/entity.h"
-
-
 namespace entities
 {
     using namespace model;

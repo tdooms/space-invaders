@@ -16,7 +16,7 @@ namespace core
 {
     enum WorldType : size_t
     {
-        start,
+        begin,
         main,
         end
     };
@@ -29,7 +29,7 @@ public:
     // but 20ms of actual time has passed. To ensure all time is accounted for, all passed time is
     // stored in unprocessedTime, and then the engine processes as much time as it can. Any
     // unaccounted time can then be processed later, since it will remain stored in unprocessedTime.
-    void startGame();
+    int start();
 
 private:
     // these functions are to separate the main loop from the game logic itself
@@ -37,7 +37,7 @@ private:
     void update(Stage stage);
 
     std::array<World, 3> worlds;
-    WorldType current = start;
+    WorldType current = begin;
 
     size_t id = 0;
     size_t level = 0;

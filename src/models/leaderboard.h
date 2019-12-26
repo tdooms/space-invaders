@@ -11,7 +11,7 @@
 #pragma once
 
 #include "object.h"
-#include "../parsers/json.h"
+#include "../parsers/parser.h"
 
 #include <fstream>
 #include <filesystem>
@@ -23,16 +23,8 @@ namespace model
     public:
         explicit Leaderboard(const std::filesystem::path& path, size_t score) : path(path), score(score)
         {
-            std::ifstream file(this->path);
-            json = nlohmann::json::parse(file);
-            scores.resize(json.size());
-
-            for(size_t i = 0; i < json.size(); i++)
-            {
-                scores[i] = std::make_pair(json[i]["score"], json[i]["name"]);
-            }
+            scores = parser::loadLeaderboard(path);
             sortScores();
-
             showName = highscore();
         }
 
@@ -54,23 +46,10 @@ namespace model
             if(not highscore()) return;
             scores.back() = std::make_pair(score, name);
             sortScores();
-            writeBack();
+            parser::storeLeaderboard(path, scores);
 
             showName = false;
             send(Event::valueChanged);
-        }
-
-        void writeBack()
-        {
-            size_t i = 0;
-            for(const auto& [score, name] : scores)
-            {
-                json[i]["score"] = score;
-                json[i]["name"] = name;
-                i++;
-            }
-            std::ofstream file(path);
-            file << json;
         }
 
         [[nodiscard]] char getChar() const noexcept
@@ -124,14 +103,13 @@ namespace model
             send(Event::valueChanged);
         }
 
-        bool getShowName() const noexcept
+        [[nodiscard]] bool getShowName() const noexcept
         {
             return showName;
         }
 
     private:
         std::filesystem::path path;
-        nlohmann::json json;
         std::vector<std::pair<size_t, std::string>> scores;
 
         std::string name;

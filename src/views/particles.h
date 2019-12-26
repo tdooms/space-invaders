@@ -39,11 +39,12 @@ namespace view
             {
                 const auto pos = util::Transform::get().transform(particles[i].position);
                 const auto radius = util::Transform::get().scale(particles[i].radius);
+                const auto color = util::Color::toSfColor(particles[i].color);
 
                 shapes[i].setPosition(pos);
                 shapes[i].setRadius(radius);
 
-                shapes[i].setFillColor(util::Color::toSfColor(model.getColor()));
+                shapes[i].setFillColor(color);
             }
         }
 

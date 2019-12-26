@@ -16,8 +16,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../parsers/parser.h"
-#include "entities.h"
-#include "objects.h"
+#include "../models/selection.h"
 
 using namespace std::chrono;
 
@@ -27,12 +26,12 @@ namespace core
 
 void Game::setup()
 {
-    id = parser::loadAndAddSelection("res/players", worlds[WorldType::start]);
+    id = parser::loadAndAddSelection("res/players", worlds[WorldType::begin]);
 }
 
 void Game::update(Stage stage)
 {
-    if(current == WorldType::start)
+    if(current == WorldType::begin)
     {
         const auto& selector = dynamic_cast<model::Selection&>(*worlds[current].findModel(id)->second);
         if(selector.isConfirmed())
@@ -42,24 +41,27 @@ void Game::update(Stage stage)
             parser::loadAndAddPlayer(selector.getPath(), worlds[current]);
             parser::loadAndAddShield("res/shields/shield-config.json", worlds[current]);
             parser::loadAndAddLevel("res/levels/level" + std::to_string(level++) + ".json", worlds[current]);
-            worlds[WorldType::main].addObject<objects::Score>(std::tuple(Vec2d(3.6, -2.8), 30));
+            parser::loadAndAddScore("res/layout/score.json", worlds[current]);
         }
     }
     if(current == WorldType::main)
     {
+        bool done = false;
         if(stage == Stage::victory)
         {
-            parser::loadAndAddLevel("res/levels/level" + std::to_string(level++) + ".json", worlds[current]);
+            const auto path = "res/levels/level" + std::to_string(level++) + ".json";
+            if(not parser::loadAndAddLevel(path, worlds[current])) done = true;
         }
-        if(stage == Stage::defeat)
+        if(stage == Stage::defeat or done)
         {
             current = WorldType::end;
-            worlds[end].addObject<objects::Leaderboard>(std::tuple("res/data/leaderboard.json", worlds[WorldType::main].getScore()));
+            const auto score = worlds[WorldType::main].getScore();
+            parser::loadAndAddLeaderBoard("res/data/leaderboard.json", worlds[current], score);
         }
     }
 }
 
-void Game::startGame()
+int Game::start()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "space invaders", sf::Style::Titlebar | sf::Style::Close);
     setup();
@@ -72,14 +74,14 @@ void Game::startGame()
     constexpr std::chrono::duration<double> frameTime(1.0 / 60.0);
 
     duration<double> unprocessedTime(0);
-    duration<double> previousTime = std::chrono::system_clock::now().time_since_epoch();
+    duration<double> previousTime = util::Stopwatch::get().time().time_since_epoch();
     duration<double> frameCounter(0);
 
     // main game loop
     while(shouldRun)
     {
         // update time parameters
-        const auto currentTime = std::chrono::system_clock::now().time_since_epoch();
+        const auto currentTime = util::Stopwatch::get().time().time_since_epoch();
         const auto passedTime = currentTime - previousTime;
         previousTime = currentTime;
 
@@ -127,6 +129,8 @@ void Game::startGame()
             std::this_thread::sleep_for(1ms);
         }
     }
+
+    return 0;
 }
 
 

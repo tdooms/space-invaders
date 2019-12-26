@@ -25,7 +25,7 @@ namespace util
         }
 
         template<typename Type = double>
-        [[nodiscard]] Type between(Type min, Type max) const noexcept
+        [[nodiscard]] Type between(Type min, Type max) noexcept
         {
             if constexpr (std::is_floating_point_v<Type>)
             {
@@ -43,8 +43,6 @@ namespace util
             }
         }
 
-        explicit Random() = default;
-
         // delete unnecessary operators/constructors
         Random(const Random&) = delete;
         void operator=(const Random&) = delete;
@@ -52,6 +50,11 @@ namespace util
         void operator=(Random&&) = delete;
 
     private:
-        static inline std::mt19937 twister{5};
+        explicit Random()
+        {
+            std::random_device device;
+            twister = std::mt19937(device());
+        }
+        std::mt19937 twister;
     };
 }

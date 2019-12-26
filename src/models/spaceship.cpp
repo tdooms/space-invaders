@@ -13,7 +13,6 @@
 #include "../core/game.h"
 #include "../core/entities.h"
 
-
 namespace model
 {
 
@@ -33,7 +32,7 @@ void Spaceship::update(core::World& world)
         {
             const auto startPos = pos + Vec2d::fromPolar(dim.y + bulletInfo.dim.y, angle);
             const auto startVel = Vec2d::fromPolar(bulletInfo.speed, angle);
-            auto args = std::tuple(startPos, startVel, bulletInfo.dim, bulletInfo.damage, bulletInfo.pierce, bulletInfo.color, bulletInfo.texture);
+            auto&& args = std::tuple(startPos, startVel, bulletInfo.dim, bulletInfo.damage, bulletInfo.pierce, bulletInfo.color, bulletInfo.texture);
 
             if(side == Side::player) world.addEntity<entities::PlayerProjectile>(std::move(args));
             else if(side == Side::enemy) world.addEntity<entities::EnemyProjectile>(std::move(args));
@@ -78,7 +77,7 @@ ExplodeData Spaceship::getExplodeData() const noexcept
     data.num = (side == Side::player) ? 200 : 50;
 
     data.minSize = 0.0;
-    data.maxSize = 0.2;
+    data.maxSize = 0.03;
 
     return data;
 }

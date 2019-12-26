@@ -11,7 +11,6 @@
 #pragma once
 
 #include "observer.h"
-#include "events.h"
 
 #include <memory>
 #include <vector>

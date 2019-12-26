@@ -11,10 +11,9 @@
 #pragma once
 
 #include <SFML/Graphics/Text.hpp>
-#include "abstract.h"
 
 #include "../models/spaceship.h"
-#include "../managers/manager.h"
+#include "../util/manager.h"
 #include "../util/transform.h"
 
 namespace view
@@ -22,7 +21,7 @@ namespace view
 class PlayerInfo : public view::Abstract
 {
 public:
-    explicit PlayerInfo(std::shared_ptr<model::Abstract> model) : Abstract(std::move(model))
+    explicit PlayerInfo(const std::shared_ptr<model::Abstract>& model) : Abstract(model)
     {
         const auto posY = util::Transform::get().scale(height + offset);
 
