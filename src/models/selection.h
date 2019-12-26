@@ -11,14 +11,14 @@
 #pragma once
 
 #include "object.h"
-#include "../parsers/json.h"
 
 namespace model
 {
+    // this model just keeps track of the current choice at the start
     class Selection : public Object
     {
     public:
-        explicit Selection(std::filesystem::path base, std::vector<std::string> ships) : base(std::move(base)), ships(std::move(ships)) {}
+        Selection(std::filesystem::path base, std::vector<std::string> ships) : base(std::move(base)), ships(std::move(ships)) {}
 
         void update([[maybe_unused]] core::World& world) override {}
 
@@ -57,7 +57,7 @@ namespace model
         size_t choice = 0;
         bool confirmed = false;
 
-        std::filesystem::path base;
+        std::filesystem::path base{};
         std::vector<std::string> ships;
     };
 }

@@ -17,6 +17,7 @@ namespace core { class World; }
 
 namespace model
 {
+    // type indicating the type of the entity model
     enum class Type
     {
         spaceship,
@@ -24,6 +25,7 @@ namespace model
         shield
     };
 
+    // type indicating the side of the entity model)
     enum class Side
     {
         player,
@@ -31,6 +33,7 @@ namespace model
         neutral
     };
 
+    // type indicating how the world should react to the model
     enum class Reaction
     {
         none,

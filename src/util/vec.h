@@ -13,6 +13,7 @@
 #include <array>
 #include <cmath>
 
+// simple vector class that supports most operators
 struct Vec2d
 {
     Vec2d();

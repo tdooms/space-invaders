@@ -34,14 +34,16 @@ namespace view
             {
                 const auto dimensions = util::Transform::get().scale(model.getDimensions());
                 const auto position = util::Transform::get().transform(model.getPosition());
+                const auto color = util::Color::toSfColor(model.getColor());
 
                 shape.setPosition(position);
                 shape.setOrigin(dimensions);
                 shape.setSize(dimensions * 2.0f);
+                shape.setFillColor(color);
             }
             else if(event == Event::textureChanged)
             {
-                shape.setTexture(SfManager::getTexture(model.getTexture()).get());
+                shape.setTexture(util::SfManager::getTexture(model.getTexture()).get());
             }
         }
 

@@ -1,7 +1,7 @@
 Selecteer het ruimteschip aan de hand van de pijltjes of de nummers.
 Duw op enter om te kiezen.
 
-Beweeg met wasd (naar boven en naar beneden kan dus ook).
+Beweeg met de pijltjes.
 Schiet met spatie.
 
 De lichtrode balk zijn je levens, de lichtblauwe de cooldown van je wapen.

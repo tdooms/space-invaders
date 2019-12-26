@@ -30,19 +30,11 @@ public:
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            model.accelerate(Vec2d(-0.001, 0));
+            model.left();
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            model.accelerate(Vec2d(0.001, 0));
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            model.accelerate(Vec2d(0, -0.001));
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            model.accelerate(Vec2d(0, 0.001));
+            model.right();
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {

@@ -20,7 +20,7 @@ namespace controller
     class Selection : public controller::Abstract
     {
     public:
-        Selection(std::shared_ptr<model::Selection> model, std::shared_ptr<view::Selection> view) : Abstract(std::move(model), std::move(view)) {}
+        Selection(const std::shared_ptr<model::Selection>& model, const std::shared_ptr<view::Selection>& view) : Abstract(model, view) {}
 
         void update() override
         {
@@ -37,6 +37,7 @@ namespace controller
 
             if(not cooldown.done()) return;
 
+            // set a small cooldown every time a key was pressed to prevent multiple presses
             if(curr != 0 and sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
                 cooldown.start(200ms);

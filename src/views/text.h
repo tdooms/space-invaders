@@ -23,7 +23,7 @@ namespace view
     public:
         explicit Text(std::shared_ptr<model::Text> model) : Abstract(std::move(model)), text()
         {
-            text.setFont(*SfManager::getFont("LemonMilk.otf"));
+            text.setFont(*util::SfManager::getFont("LemonMilk.otf"));
             receive(Event::valueChanged);
         }
 
@@ -35,7 +35,7 @@ namespace view
             text.setString(model.getString());
             text.setFillColor(sf::Color::White);
             text.setPosition(util::Transform::get().transform(model.getPosition()));
-            text.setCharacterSize(model.getFontSize());
+            text.setCharacterSize(static_cast<unsigned int>(model.getFontSize()));
             text.setOrigin(text.getLocalBounds().width / 2.0f, text.getLocalBounds().height / 2.0f);
         }
 

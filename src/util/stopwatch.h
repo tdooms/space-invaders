@@ -14,6 +14,7 @@
 
 namespace util
 {
+    // singleton pattern stopwatch
     class Stopwatch
     {
     public:

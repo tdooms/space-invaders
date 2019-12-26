@@ -8,6 +8,7 @@ file(GLOB_RECURSE SRCS ${space-invaders_SOURCE_DIR}/src/*.cpp)
 
 add_executable(space-invaders ${HDRS} ${SRCS})
 
+target_include_directories(space-invaders PRIVATE ${space-invaders_SOURCE_DIR}/external)
 target_link_libraries(space-invaders "-lsfml-graphics -lsfml-window -lsfml-system")
 target_link_libraries(space-invaders stdc++fs)
 

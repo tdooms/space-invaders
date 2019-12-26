@@ -32,7 +32,7 @@ namespace view
             info.setPosition(util::Transform::get().transform(Vec2d(0, -2.5)));
             result.setPosition(util::Transform::get().transform(Vec2d(0, -2.5)));
 
-            const auto font = SfManager::getFont("LemonMilk");
+            const auto font = util::SfManager::getFont("LemonMilk");
             curr.setFont(*font);
             next.setFont(*font);
             prev.setFont(*font);

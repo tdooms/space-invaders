@@ -37,7 +37,7 @@ namespace view
 
             for(size_t i = 0; i < particles.size(); i++)
             {
-                const auto pos = util::Transform::get().transform(particles[i].position);
+                const auto pos = util::Transform::get().transform(particles[i].pos);
                 const auto radius = util::Transform::get().scale(particles[i].radius);
                 const auto color = util::Color::toSfColor(particles[i].color);
 

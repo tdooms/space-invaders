@@ -11,7 +11,7 @@
 
 #include "../util/vec.h"
 #include "../util/color.h"
-#include "../util/random.h"
+#include "../external/random.hpp"
 
 #include "object.h"
 
@@ -20,10 +20,14 @@ namespace inheritable { struct ExplodeData; }
 
 namespace model
 {
+    // contains all the data for a particle
     struct Particle
     {
-        Vec2d position;
-        Vec2d velocity;
+        Particle(Vec2d pos, Vec2d vel, util::Color color, double radius)
+        : pos(pos), vel(vel), color(color), radius(radius) {}
+
+        Vec2d pos;
+        Vec2d vel;
         util::Color color;
         double radius;
     };
@@ -31,7 +35,7 @@ namespace model
     class Particles : public Object
     {
     public:
-        Particles(inheritable::ExplodeData data);
+        explicit Particles(const inheritable::ExplodeData& data);
 
         void update(core::World& world) override;
 

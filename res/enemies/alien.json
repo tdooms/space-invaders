@@ -6,8 +6,7 @@
     "downSpeed": 0.002,
     "horizontalSpeed": 0.03,
 
-    "startColor": [255, 178, 102],
-    "deathColor": [102, 0, 0],
+    "color": [255, 178, 102],
     "texture": "alien"
   },
   "bullets":

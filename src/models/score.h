@@ -16,6 +16,7 @@
 
 namespace model
 {
+// this is the model for the score widget you can see
 class Score : public Object
 {
 public:

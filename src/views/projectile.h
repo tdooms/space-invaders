@@ -44,7 +44,7 @@ namespace view
             }
             else if(event == Event::textureChanged)
             {
-                shape.setTexture(SfManager::getTexture(model.getTexture()).get());
+                shape.setTexture(util::SfManager::getTexture(model.getTexture()).get());
             }
         }
 

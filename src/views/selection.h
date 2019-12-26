@@ -20,11 +20,11 @@ public:
     explicit Selection(std::shared_ptr<model::Selection> model) : Abstract(std::move(model))
     {
         const auto dim = util::Transform::get().scale(Vec2d(0.3, 0.3));
-        arrow.setTexture(SfManager::getTexture("arrow").get());
+        arrow.setTexture(util::SfManager::getTexture("arrow").get());
         arrow.setSize(dim);
         arrow.setOrigin(dim.x / 2.0f, dim.y / 2.0f);
 
-        info.setFont(*SfManager::getFont("LemonMilk"));
+        info.setFont(*util::SfManager::getFont("LemonMilk"));
         info.setString("press enter to choose");
         info.setCharacterSize(30);
         info.setOrigin(info.getLocalBounds().width / 2.0f, info.getLocalBounds().height / 2.0f);

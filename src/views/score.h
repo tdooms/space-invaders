@@ -23,7 +23,7 @@ namespace view
     public:
         explicit Score(std::shared_ptr<model::Score> model) : Abstract(std::move(model)), text()
         {
-            text.setFont(*SfManager::getFont("LemonMilk.otf"));
+            text.setFont(*util::SfManager::getFont("LemonMilk.otf"));
             receive(Event::valueChanged);
         }
 

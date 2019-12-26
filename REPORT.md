@@ -1,4 +1,5 @@
 # Space invaders
+**Made by:** Thomas Dooms s0181389
 ## File structure overview
 Most folders in **res** are quite self explanatory. If you add a new level file in the folder, it will automatically play it after the last one, (it does need to be of the form level`x`.json though). When a new file is added (or unhidden) in the player folder, it automatically adds it as a choice (try removing the `.` from `.cheat.json`) .
 
@@ -6,7 +7,7 @@ The **src** has a little more, like the models.views and controllers and some mo
 
 - **core folder:** most files that are tied to the game are in this folder, like **entities** and **game** itself.
 - **inheritables folder:** for the lack of a better name, this contains **explodable** and **collidable**.
-- **util folder:** contains **vec2d**, **stopwatch**, and other useful classes.
+- **util folder:** contains **vec2d**, **Stopwatch**, and other useful classes.
 - **parsers folder:** contains the nlohmann json file and my parsing logic.
 
 Almost every constant or variable can be read in from files. this way it is easy to change/balance and add new enemies/features.
@@ -16,7 +17,7 @@ I chose to implement the MVC pattern using the observer pattern. Every model is 
 
 I split the notion of *GameObject* into 2 concepts:
 An **Entity** is a meta-class, describing of which model/view/controller it uses and extra info.
-An  **Object** is almost the same, but has less info and is used for static things such as text.
+An **Object** is almost the same, but has less info and is used for static things such as text.
 
 Collision and physics are widely used in space invaders, to make this system as flexible as possible I used an abstract class with 2 functions **getCollideData()** and **collide()**, the former asks the object the data needed for collision detection such as position, velocity. Once we detect there is a collision we call the **collide()** function, where the object itself can handle how it handles the collision. 
 

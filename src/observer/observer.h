@@ -12,6 +12,7 @@
 
 #include "events.h"
 
+// doesn't do much but has the ability to receive events
 class Observer
 {
 public:

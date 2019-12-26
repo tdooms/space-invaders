@@ -8,7 +8,7 @@
 //============================================================================
 
 #include "vec.h"
-#include "random.h"
+#include <random.hpp>
 
 Vec2d::Vec2d() : x(0), y(0) {}
 Vec2d::Vec2d(double first, double second) : x(first), y(second) {}
@@ -20,7 +20,8 @@ Vec2d Vec2d::fromPolar(double length, double angle) noexcept
 
 Vec2d Vec2d::randomUnit() noexcept
 {
-    return fromPolar(1, util::Random::get().between(0.0, M_PI));
+    using Random = effolkronium::random_static;
+    return fromPolar(1, Random::get(0.0, M_PI));
 }
 
 Vec2d& Vec2d::normalize() noexcept

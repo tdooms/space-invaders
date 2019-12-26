@@ -22,6 +22,9 @@ namespace inheritable
 
     struct BounceBox
     {
+        BounceBox(double right, double left, double bottom, double top) :
+        right(right), left(left), bottom(bottom), top(top) {}
+
         double right;
         double left;
         double bottom;
@@ -31,6 +34,9 @@ namespace inheritable
     // all the data the collision system needs
     struct CollideData
     {
+        CollideData(Vec2d pos, Vec2d vel, Vec2d dim, double rotation, double damage, double mass, model::Type type, model::Side side)
+        : pos(pos), vel(vel), dim(dim), rotation(rotation), damage(damage), mass(mass), type(type), side(side) {}
+
         Vec2d pos;
         Vec2d vel;
         Vec2d dim;

@@ -27,33 +27,12 @@ void Projectile::update([[maybe_unused]] core::World& world)
 
 [[nodiscard]] CollideData Projectile::getCollideData() const noexcept
 {
-    CollideData data;
-    data.pos = pos;
-    data.vel = vel;
-    data.dim = dim;
-    data.rotation = 0;
-    data.damage = damage;
-    data.mass = 1;
-    data.type = type;
-    data.side = side;
-
-    return data;
+    return CollideData(pos, vel, dim, 0, damage, 1, type, side);
 }
 
 ExplodeData Projectile::getExplodeData() const noexcept
 {
-    ExplodeData data;
-    data.pos = pos;
-    data.vel = vel;
-    data.dim = dim;
-
-    data.color = getColor();
-    data.num = 10;
-
-    data.minSize = 0.0;
-    data.maxSize = 0.02;
-
-    return data;
+    return ExplodeData(pos, vel, dim, getColor(), 10, 0.0, 0.02);
 }
 
 void Projectile::collide(CollisionData data) noexcept

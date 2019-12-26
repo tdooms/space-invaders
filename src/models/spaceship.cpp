@@ -18,8 +18,8 @@ namespace model
 
 using namespace inheritable;
 
-Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double lives, util::Color startColor, util::Color deathColor, std::string texture, BulletData bulletInfo) :
-Entity(type, side), pos(pos), vel(vel), dim(dim), lives(lives), maxLives(lives), startColor(startColor), deathColor(deathColor), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
+Spaceship::Spaceship(Type type, Side side, Vec2d pos, Vec2d vel, Vec2d dim, double speed, double lives, util::Color color, std::string texture, BulletData bulletInfo) :
+Entity(type, side), pos(pos), vel(vel), dim(dim), speed(speed), lives(lives), maxLives(lives), color(color), tex(std::move(texture)), bulletInfo(std::move(bulletInfo)) {}
 
 void Spaceship::update(core::World& world)
 {
@@ -32,7 +32,7 @@ void Spaceship::update(core::World& world)
         {
             const auto startPos = pos + Vec2d::fromPolar(dim.y + bulletInfo.dim.y, angle);
             const auto startVel = Vec2d::fromPolar(bulletInfo.speed, angle);
-            auto&& args = std::tuple(startPos, startVel, bulletInfo.dim, bulletInfo.damage, bulletInfo.pierce, bulletInfo.color, bulletInfo.texture);
+            auto args = std::make_tuple(startPos, startVel, bulletInfo.dim, bulletInfo.damage, bulletInfo.pierce, bulletInfo.color, bulletInfo.texture);
 
             if(side == Side::player) world.addEntity<entities::PlayerProjectile>(std::move(args));
             else if(side == Side::enemy) world.addEntity<entities::EnemyProjectile>(std::move(args));
@@ -51,35 +51,13 @@ void Spaceship::update(core::World& world)
 
 CollideData Spaceship::getCollideData() const noexcept
 {
-    CollideData data;
-    data.pos = pos;
-    data.vel = vel;
-    data.dim = dim;
-
-    data.rotation = 0.0;
-    data.damage = 1.0;
-    data.mass = 1.0;
-
-    data.type = type;
-    data.side = side;
-
-    return data;
+    return CollideData(pos, vel, dim, 0.0, 1.0, 1.0, type, side);
 }
 
 ExplodeData Spaceship::getExplodeData() const noexcept
 {
-    ExplodeData data;
-    data.pos = pos;
-    data.vel = vel;
-    data.dim = dim;
-
-    data.color = getColor();
-    data.num = (side == Side::player) ? 200 : 50;
-
-    data.minSize = 0.0;
-    data.maxSize = 0.03;
-
-    return data;
+    const auto num = (side == Side::player) ? 200 : 50;
+    return ExplodeData(pos, vel, dim, getColor(), num, 0.0, 0.03);
 }
 
 void Spaceship::collide(CollisionData data) noexcept
@@ -179,6 +157,16 @@ void Spaceship::accelerate(Vec2d acceleration) noexcept
     vel += acceleration;
 }
 
+void Spaceship::right() noexcept
+{
+    vel.x += speed;
+}
+
+void Spaceship::left() noexcept
+{
+    vel.x -= speed;
+}
+
 void Spaceship::shoot() noexcept
 {
     shouldShoot = true;
@@ -226,6 +214,6 @@ void Spaceship::shoot() noexcept
 
 [[nodiscard]] util::Color Spaceship::getColor() const noexcept
 {
-    return util::Color::lerp(deathColor, startColor, lives / maxLives);
+    return util::Color::lerp(util::Black, color, lives / maxLives);
 }
 }

@@ -19,7 +19,7 @@ namespace controller
     class Text : public controller::Abstract
     {
     public:
-        Text(std::shared_ptr<model::Text> model, std::shared_ptr<view::Text> view) : Abstract(std::move(model), std::move(view)) {}
+        Text(const std::shared_ptr<model::Text>& model, const std::shared_ptr<view::Text>& view) : Abstract(model, view) {}
 
         void update() override {}
     };

@@ -15,10 +15,11 @@
 
 namespace model
 {
+// a simple text model containing a string
 class Text : public Object
 {
 public:
-    explicit Text(std::string string, Vec2d position, size_t fontSize) : string(std::move(string)), position(position), fontSize(fontSize) {}
+    Text(std::string string, Vec2d position, size_t fontSize) : string(std::move(string)), position(position), fontSize(fontSize) {}
 
     void update([[maybe_unused]] core::World& world) override {}
 
@@ -30,7 +31,7 @@ public:
 
 private:
     std::string string;
-    Vec2d position;
+    Vec2d position{};
     size_t fontSize;
 };
 }

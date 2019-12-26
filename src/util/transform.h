@@ -15,6 +15,7 @@
 
 namespace util
 {
+    // singleton transform class with a few handy functions
     class Transform
     {
     public:
@@ -44,7 +45,7 @@ namespace util
 
         [[nodiscard]] sf::Vector2u getScreenSize() const noexcept
         {
-            return sf::Vector2u(screenSize.x, screenSize.y);
+            return sf::Vector2u(static_cast<unsigned int>(screenSize.x), static_cast<unsigned int>(screenSize.y));
         }
 
         // delete unnecessary operators/constructors

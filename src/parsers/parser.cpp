@@ -7,18 +7,17 @@
 // @description : 
 //============================================================================
 
-
 #include "../core/entities.h"
 #include "../views/playerInfo.h"
 #include "../core/world.h"
-
-#include "../core/entities.h"
 #include "../core/objects.h"
 
 #include <fstream>
 
 namespace parser
 {
+    using Random = effolkronium::random_static;
+
     nlohmann::json openJson(const std::filesystem::path& path)
     {
         if(not std::filesystem::exists(path))
@@ -49,6 +48,7 @@ namespace parser
         result.damage = json["damage"];
         result.pierce = json["pierce"];
 
+        // I cannot yet use c++20's std::numbers::pi sadly
         result.shootAngle = json["shootAngle"].get<double>() * (M_PI / 180.0);
         result.spreadAngle = json["spreadAngle"].get<double>() * (M_PI / 180.0);
         result.numBullets = json["numBullets"];
@@ -94,12 +94,13 @@ namespace parser
             const auto start = Vec2d(json["stats"]["startX"], json["stats"]["startY"]);
             const auto velocity = Vec2d();
             const auto dim = Vec2d(json["stats"]["size"], json["stats"]["size"]);
-            const double lives = json["stats"]["lives"];
+            const auto speed = json["stats"]["speed"];
+            const auto lives = json["stats"]["lives"];
             const auto color = util::Color::fromJson(json["stats"]["color"]);
             const auto texture = json["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(json["bullets"]);
 
-            const auto id = world.addEntity<entities::Player>(std::tuple(start, velocity, dim, lives, color, color, texture, bulletInfo));
+            const auto id = world.addEntity<entities::Player>(std::forward_as_tuple(start, velocity, dim, speed, lives, color, texture, bulletInfo));
             world.addViewToEntity<view::PlayerInfo>(id);
         }
         catch(std::exception& e)
@@ -123,7 +124,7 @@ namespace parser
             for(const auto& elem : json["shields"])
             {
                 const auto posititon = Vec2d(elem["posX"], elem["posY"]);
-                world.addEntity<entities::Shield>(std::tuple(posititon, dimensions, lives, color, texture));
+                world.addEntity<entities::Shield>(std::forward_as_tuple(posititon, dimensions, lives, color, texture));
             }
         }
         catch(std::exception& e)
@@ -140,12 +141,13 @@ namespace parser
             const auto start = pos;
             const auto velocity = Vec2d();
             const auto dim = Vec2d(json["stats"]["size"], json["stats"]["size"]);
-            const double lives = json["stats"]["lives"];
-            const util::Color color = util::Color::fromJson(json["stats"]["color"]);
-            const std::string texture = json["stats"]["texture"];
+            const auto speed = 0.0;
+            const auto lives = json["stats"]["lives"];
+            const auto color = util::Color::fromJson(json["stats"]["color"]);
+            const auto texture = json["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(json["bullets"]);
 
-            world.addEntity<entities::Enemy>(std::tuple(start, velocity, dim, lives, color, color, texture, bulletInfo));
+            world.addEntity<entities::Enemy>(std::forward_as_tuple(start, velocity, dim, speed, lives, color, texture, bulletInfo));
         }
         catch(std::exception& e)
         {
@@ -183,7 +185,7 @@ namespace parser
             names.emplace_back(elem["info"]["name"]);
         }
 
-        const auto id = world.addObject<objects::Selection>(std::tuple(path, std::move(names)));
+        const auto id = world.addObject<objects::Selection>(std::forward_as_tuple(path, std::move(names)));
 
         const auto offset = 8.0 / static_cast<double>(choices.size());
 
@@ -191,8 +193,8 @@ namespace parser
         for(const auto& choice : choices)
         {
             loadAndAddPreview(choice, world, currPos + Vec2d(0, -0.4));
-            world.addObject<objects::Text>(std::tuple(choice["info"]["name"], currPos, 20));
-            world.addObject<objects::Text>(std::tuple(choice["info"]["description"], currPos + Vec2d(0, 0.3), 11));
+            world.addObject<objects::Text>(std::forward_as_tuple(choice["info"]["name"], currPos, 20));
+            world.addObject<objects::Text>(std::forward_as_tuple(choice["info"]["description"], currPos + Vec2d(0, 0.3), 11));
             currPos.x += offset;
         }
 
@@ -204,17 +206,17 @@ namespace parser
         try
         {
             const auto json = openJson(path);
-            static const auto start = Vec2d(-3.9, -2.9);
+            const auto start = Vec2d(-3.9, -2.9);
 
-            const size_t numEnemies = json["level"]["numEnemies"];
+            const auto numEnemies = json["level"]["numEnemies"];
             const auto enemyJson = openJson("res/enemies/" + json["level"]["type"].get<std::string>() + ".json");
 
             const auto velocity = Vec2d(enemyJson["stats"]["horizontalSpeed"], enemyJson["stats"]["downSpeed"]);
             const auto dim = Vec2d(enemyJson["stats"]["size"], enemyJson["stats"]["size"]);
-            const double lives = enemyJson["stats"]["lives"];
+            const auto speed = enemyJson["stats"]["horizontalSpeed"];
+            const auto lives = enemyJson["stats"]["lives"];
 
-            const auto startColor = util::Color::fromJson(enemyJson["stats"]["startColor"]);
-            const auto deathColor = util::Color::fromJson(enemyJson["stats"]["deathColor"]);
+            const auto color = util::Color::fromJson(enemyJson["stats"]["color"]);
 
             const auto texture = enemyJson["stats"]["texture"];
             const auto bulletInfo = parseBulletInfo(enemyJson["bullets"]);
@@ -223,17 +225,17 @@ namespace parser
 
             for(size_t i = 0; i < numEnemies; i++)
             {
-                world.addEntity<entities::Enemy>(std::tuple(curr, velocity, dim, lives, startColor, deathColor, texture, bulletInfo));
+                world.addEntity<entities::Enemy>(std::forward_as_tuple(curr, velocity, dim, speed, lives, color, texture, bulletInfo));
 
                 // calculate next position
                 if(curr.x > 2)
                 {
-                    curr.x = start.x + util::Random::get().between(0.1, 0.2);
+                    curr.x = start.x + Random::get(0.1, 0.2);
                     curr.y += 2 * dim.y + 0.05;
                 }
                 else
                 {
-                    curr.x += 2 * dim.x + util::Random::get().between(0.1, 0.2);
+                    curr.x += 2 * dim.x + Random::get(0.1, 0.2);
                 }
             }
         }
@@ -247,13 +249,13 @@ namespace parser
     bool loadAndAddScore(const std::filesystem::path& path, core::World& world)
     {
         const auto json = openJson(path);
-        world.addObject<objects::Score>(std::tuple(Vec2d(json["x"], json["y"]), json["size"]));
+        world.addObject<objects::Score>(std::forward_as_tuple(Vec2d(json["x"], json["y"]), json["size"]));
         return true;
     }
 
-    bool loadAndAddLeaderBoard(std::filesystem::path path, core::World& world, size_t score)
+    bool loadAndAddLeaderBoard(const std::filesystem::path& path, core::World& world, size_t score)
     {
-        world.addObject<objects::Leaderboard>(std::tuple(std::move(path), score));
+        world.addObject<objects::Leaderboard>(std::forward_as_tuple(path, score));
         return true;
     }
 }

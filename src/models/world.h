@@ -15,6 +15,7 @@
 
 namespace model
 {
+    // the world model, used in core::World
     class World : public model::Abstract
     {
     public:
