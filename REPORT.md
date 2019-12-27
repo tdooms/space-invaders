@@ -49,6 +49,12 @@ These last two functions are the only hard-coded game logic, here is a part of t
 	   parser::loadAndAddLeaderBoard("res/data/leaderboard.json", worlds[current], score);  
      }
 	
+## Extensions I made
+- choosing player
+- bullet properties (duo, pierce, ...)
+- leader board
+- almost everything is parsed from .json files (players, enemies, level, shield, ...)
+- particle effects
 
 ## Extending the game
 The main theme of the project was to make it as extensible as possible. I achieved this goal using templates and lots of abstraction. I will give some examples of how to extend the game in some ways.
@@ -56,7 +62,7 @@ The main theme of the project was to make it as extensible as possible. I achiev
 **adding local multiplayer** only requires 3 simple changes:
 - adding a new controller to allow other keys to be used for the other player.
 - adding a new entity **entities::player2** with the new controller.
-- you will need to add another world to game where player 2 can choose their ship.
+- you will need to add another selection world to the game where player 2 can choose their ship.
 
 **adding power ups** is also quite easy:
 - Make enemies drop a power up when they die, this could be done by extending **Explodable**.
