@@ -2,11 +2,10 @@
 // @name        : shield.h
 // @author      : Thomas Dooms
 // @date        : 12/14/19
-// @version     : 
+// @version     :
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
-// @description : 
+// @description :
 //============================================================================
-
 
 #pragma once
 
@@ -14,41 +13,46 @@
 #include "../inheritables/explodable.h"
 #include "entity.h"
 
-namespace model
-{
-    // this model also just removes itself when it dies
-    class Shield : public Entity, public inheritable::Collidable, public inheritable::Explodable
-    {
-    public:
-        Shield(Type type, Side side, Vec2d pos, Vec2d dim, double lives, util::Color color, std::string texture);
+namespace model {
+// this model also just removes itself when it dies
+class Shield : public Entity,
+               public inheritable::Collidable,
+               public inheritable::Explodable {
+public:
+  Shield(Type type, Side side, Vec2d pos, Vec2d dim, double lives,
+         util::Color color, std::string texture);
 
-        [[nodiscard]] inheritable::CollideData getCollideData() const noexcept override;
+  [[nodiscard]] inheritable::CollideData getCollideData() const
+      noexcept override;
 
-        [[nodiscard]] inheritable::ExplodeData getExplodeData() const noexcept override;
+  [[nodiscard]] inheritable::ExplodeData getExplodeData() const
+      noexcept override;
 
-        void update([[maybe_unused]] core::World& world) override;
+  void update([[maybe_unused]] core::World &world) override;
 
-        void collide([[maybe_unused]] inheritable::CollisionData data) noexcept override;
+  void collide([
+      [maybe_unused]] inheritable::CollisionData data) noexcept override;
 
-        void bounce([[maybe_unused]] inheritable::BounceBox box, [[maybe_unused]] inheritable::Wall wall) noexcept override;
+  void bounce([[maybe_unused]] inheritable::BounceBox box,
+              [[maybe_unused]] inheritable::Wall wall) noexcept override;
 
-        [[nodiscard]] Vec2d getPosition() const noexcept;
+  [[nodiscard]] Vec2d getPosition() const noexcept;
 
-        [[nodiscard]] Vec2d getDimensions() const noexcept;
+  [[nodiscard]] Vec2d getDimensions() const noexcept;
 
-        [[nodiscard]] std::string getTexture() const noexcept;
+  [[nodiscard]] std::string getTexture() const noexcept;
 
-        [[nodiscard]] util::Color getColor() const noexcept;
+  [[nodiscard]] util::Color getColor() const noexcept;
 
-    private:
-        Vec2d pos;
-        Vec2d dim;
+private:
+  Vec2d pos;
+  Vec2d dim;
 
-        double lives;
-        double maxLives;
+  double lives;
+  double maxLives;
 
-        util::Color color;
-        std::string texture;
-    };
+  util::Color color;
+  std::string texture;
+};
 
-}
+} // namespace model

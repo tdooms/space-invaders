@@ -7,21 +7,20 @@
 // @description :
 //============================================================================
 
-
 #pragma once
 
-#include "abstract.h"
 #include "../models/particles.h"
 #include "../views/particles.h"
+#include "abstract.h"
 
-namespace controller
-{
-    class Particles : public controller::Abstract
-    {
-    public:
-        Particles(std::shared_ptr<model::Particles> model, std::shared_ptr<view::Particles> view) : Abstract(std::move(model), std::move(view)) {}
+namespace controller {
+class Particles : public controller::Abstract {
+public:
+  Particles(std::shared_ptr<model::Particles> model,
+            std::shared_ptr<view::Particles> view)
+      : Abstract(std::move(model), std::move(view)) {}
 
-        void update() override {}
-    };
+  void update() override {}
+};
 
-}
+} // namespace controller

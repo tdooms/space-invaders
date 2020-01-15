@@ -2,17 +2,12 @@
 // @name        : types.h
 // @author      : Thomas Dooms
 // @date        : 12/3/19
-// @version     : 
+// @version     :
 // @copyright   : BA1 Informatica - Thomas Dooms - University of Antwerp
-// @description : 
+// @description :
 //============================================================================
-
 
 #pragma once
 
 // we make an exception for textures because they are not cheap to change
-enum class Event
-{
-    valueChanged,
-    textureChanged
-};
+enum class Event { valueChanged, textureChanged };
