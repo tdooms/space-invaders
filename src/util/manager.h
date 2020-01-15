@@ -9,10 +9,9 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <filesystem>
 #include <memory>
-#include <unordered_map>
-
 #include <SFML/Graphics.hpp>
 
 namespace util {

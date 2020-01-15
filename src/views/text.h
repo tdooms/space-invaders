@@ -18,8 +18,8 @@
 namespace view {
 class Text final : public view::Abstract {
 public:
-  explicit Text(std::shared_ptr<model::Text> model)
-      : Abstract(std::move(model)), text() {
+  explicit Text(const std::shared_ptr<model::Text>& model)
+      : Abstract(model), text() {
     text.setFont(*util::SfManager::getFont("LemonMilk.otf"));
     receive(Event::valueChanged);
   }

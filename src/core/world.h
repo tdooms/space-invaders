@@ -9,9 +9,9 @@
 
 #pragma once
 
+#include <unordered_set>
 #include "../collision/detector.h"
 #include "../controllers/world.h"
-#include <unordered_set>
 
 namespace core {
 enum class Stage { start, normal, defeat, victory };
